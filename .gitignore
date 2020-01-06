@@ -1,0 +1,7 @@
+/.cache/
+/.psc-ide-port
+/.spago2nix/
+/dist/
+/node_modules
+/output/
+/result
