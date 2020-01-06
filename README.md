@@ -12,8 +12,8 @@ from the [PureScript Concur Starter](https://github.com/purescript-concur/puresc
 
 After you clone this repository:
 
-* update the default.nix nixpkgs version
-* update the default.nix easy-purescript-nix version
+* update the default.nix nixpkgs version by updating 'rev'
+* update the default.nix easy-purescript-nix version by updating 'rev'
 * change the default.nix pname
 * change the default.nix meta fields
 * update node packages by running node2nix as per the readme

@@ -1,8 +1,8 @@
 # pin nixpkgs version for reproducible builds
 { pkgs ? (import (builtins.fetchGit {
-  url = "https://github.com/NixOS/nixpkgs-channels.git";
+  url = https://github.com/NixOS/nixpkgs-channels.git;
   ref = "nixos-19.09";
-  rev = "8bf142e001b6876b021c8ee90c2c7cec385fe8e9";
+  rev = "b926503738cc5b19f3ee66f8a5745c41318a82ff";
 }) {}) }:
 
 let
@@ -15,11 +15,10 @@ let
   # from [easy-purescript-nix]
   # (https://github.com/justinwoo/easy-purescript-nix).
   # This is updated more frequently than nixpkgs versions.
-  easy-ps = import (pkgs.fetchFromGitHub {
-    owner = "justinwoo";
-    repo = "easy-purescript-nix";
-    rev = "cc7196bff3fdb5957aabfe22c3fa88267047fe88";
-    sha256 = "1xfl7rnmmcm8qdlsfn3xjv91my6lirs5ysy01bmyblsl10y2z9iw";
+  easy-ps = import (builtins.fetchGit {
+    url = https://github.com/justinwoo/easy-purescript-nix.git;
+    ref = "master";
+    rev = "6cb5825430ab44719139f28b93d50c5810891366";
   }) { inherit pkgs; };
 
   # Create a simple derivation
