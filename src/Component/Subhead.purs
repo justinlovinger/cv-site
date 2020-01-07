@@ -1,7 +1,6 @@
 module Component.Subhead where
 
-import CSS
-
+import CSS (CSS, fontSize, fromString, margin, px)
 import CSS.Render.Concur.React (styledEl)
 import Concur.React.DOM (El, h2)
 import Prelude (($), discard)

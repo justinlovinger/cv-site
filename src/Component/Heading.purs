@@ -1,7 +1,6 @@
 module Component.Heading where
 
-import CSS
-
+import CSS (CSS, fontSize, fromString, margin, px)
 import CSS.Render.Concur.React (styledEl)
 import Concur.React.DOM (El, h1)
 import Prelude (($), discard)

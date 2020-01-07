@@ -3,7 +3,8 @@ module Component.App where
 import Prelude
 
 import CSS (GenericFontFamily(..), element, fontFamily, fromString, key, render, renderedSheet, sansSerif, (?))
-import Component.Welcome (welcome, welcomeStyle)
+import Component.Indicator (bouncePauseStylesheet)
+import Component.Welcome (welcome)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div')
@@ -17,7 +18,7 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
     key (fromString "margin") "0"
     fontFamily [ ] (GenericFontFamily (fromString "system-ui") :| [ sansSerif ])
   
-  welcomeStyle
+  bouncePauseStylesheet
 
 app ∷ ∀ a. Widget HTML a
 app = div' [ welcome ]    
