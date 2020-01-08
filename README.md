@@ -38,16 +38,17 @@ and rebuild the spago packages derivation with
 ## Development
 
 Enter a Nix shell with `nix-shell`.
-Exit and re-enter `nix-shell`
-to update packages.
+Packages are installed when entering the Nix shell.
+New packages can be installed without exiting Nix shell
+with `eval "$configurePhase"`.
 
 ### Build code
 
-> parcel build index.html
+> eval "$buildPhase"
 
 ### Test code
 
-> eval $checkPhase
+> eval "$checkPhase"
 
 ### Run Dev Server
 

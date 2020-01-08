@@ -59,21 +59,20 @@ in pkgs.stdenv.mkDerivation {
     pkgs.closurecompiler
     pkgs.nodePackages.parcel-bundler
   ];
-  buildPhase = ''
-    export HOME=$(mktemp -d)
-
-    # Clean
-    rm -rf .cache node_modules output dist result
-
+  preConfigurePhases = [ "cleanPhase" ];
+  cleanPhase = ''
+    rm -rf .cache .spago2nix dist node_modules output result
+  '';
+  configurePhase = ''
     # Install dependencies
     # `parcel` does not support `NODE_PATH`
     # so instead of
     # `export NODE_PATH=${nodeModules}/lib/node_modules`
     # we link to working directory
-    ln -s ${nodeModules}/lib/node_modules ./node_modules
+    rm -rf node_modules && ln -s ${nodeModules}/lib/node_modules ./node_modules
     ${spagoBuildFromNixStore} "src/Main.purs" "src/**/*.purs"
-
-    # Build
+  '';
+  buildPhase = ''
     export BUILDDIR=$(mktemp -d -p .)
     purs bundle "output/*/*.js" -m Main --main Main --output $BUILDDIR/index.raw.js
     closure-compiler --js $BUILDDIR/index.raw.js --js_output_file $BUILDDIR/index.js
@@ -107,16 +106,8 @@ in pkgs.stdenv.mkDerivation {
     ${easy-ps.spago2nix}/bin:\
     $PATH
 
-    # Add node_modules/
-    # `parcel` does not support `NODE_PATH`
-    # so instead of
-    # `export NODE_PATH=${nodeModules}/lib/node_modules`
-    # we link to working directory
-    rm -rf node_modules
-    ln -s ${nodeModules}/lib/node_modules ./node_modules
-
-    # Add PureScript packages
-    ${spagoBuildFromNixStore} "src/Main.purs" "src/**/*.purs" "test/Main.purs" "test/**/*.purs"
+    # Add dependencies
+    eval "$configurePhase"
   '';
   meta = with pkgs.stdenv.lib; {
     description = "A starter template for building a frontend with Nix, PureScript, and Concur";
