@@ -28,12 +28,14 @@ projects =
     , longDescription : Nothing
     , name: "Labyrinth RL"
     , teamRole : Nothing
+    , url : Just $ URL "/file/labyrinth-rl.zip"
     }
   , { date : unsafePartial fromJust $ exactDate (unsafePartial fromJust $ toEnum 2014) December (unsafePartial fromJust $ toEnum 10) -- Date of last modified file
     , description : "Management game with physics driven combat"
     , longDescription : Nothing
     , name : "Gladiator Manager"
     , teamRole : Nothing
+    , url : Just $ URL "/file/gladiator-manager.zip"
     }
   , { date : unsafePartial fromJust $ exactDate (unsafePartial fromJust $ toEnum 2016) February (unsafePartial fromJust $ toEnum 12) -- Date of first App Engine version
     , description : "Website to automatically summarize text"
