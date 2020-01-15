@@ -10,6 +10,7 @@ You can edit this file as you like.
     [ "concur-react"
     , "console"
     , "css"
+    , "datetime"
     , "effect"
     , "foreign-object"
     , "record"
