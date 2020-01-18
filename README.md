@@ -1,25 +1,9 @@
-# Nix PureScript Concur Frontend Starter
+# Justin Lovinger CV Site
 
-A starter template
-for developing a frontend
-with Nix,
-PureScript,
-and Concur.
-Heavily modified
-from the [PureScript Concur Starter](https://github.com/purescript-concur/purescript-concur-starter).
-
-## What to change for a new project
-
-After you clone this repository:
-
-* update the default.nix nixpkgs version by updating 'rev'
-* update the default.nix easy-purescript-nix version by updating 'rev'
-* change the default.nix pname
-* change the default.nix meta fields
-* update node packages by running node2nix as per the readme
-* update purescript packages by running spago2nix as per the readme
-* change the index.html title
-* change the source code
+The personal portfolio website
+for Justin Lovinger.
+Started from
+the [Nix PureScript Concur Starter](https://github.com/JustinLovinger/nix-purescript-concur-frontend-starter).
 
 ## Installing Node packages
 

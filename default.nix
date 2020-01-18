@@ -6,7 +6,7 @@
 }) {}) }:
 
 let
-  pname = "nix-purescript-concur-frontend-starter";
+  pname = "justinlovinger-cv-site";
   version = "1.0.0";
 
   nodejs = pkgs.nodejs;
@@ -115,8 +115,8 @@ in pkgs.stdenv.mkDerivation {
     eval "$configurePhase"
   '';
   meta = with pkgs.stdenv.lib; {
-    description = "A starter template for building a frontend with Nix, PureScript, and Concur";
-    homepage = https://github.com/JustinLovinger/nix-purescript-concur-frontend-starter;
+    description = "The personal portfolio website for Justin Lovinger";
+    # homepage = ;
     license = licences.mit;
     maintainers = [ ];
   };
