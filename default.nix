@@ -61,9 +61,14 @@ in pkgs.stdenv.mkDerivation {
   ];
   preConfigurePhases = [ "cleanPhase" ];
   cleanPhase = ''
-    rm -rf .cache .spago2nix dist node_modules output result
+    rm -rf .cache .spago2nix dist node_modules output result src/Generated
   '';
   configurePhase = ''
+    # Generate PureScript files
+    mkdir -p src/Generated
+    echo "module Generated.Files where" > src/Generated/Files.purs
+    echo 'files = ${builtins.replaceStrings ["="] [":"] (builtins.toJSON (import ./files.nix))}' >> src/Generated/Files.purs
+
     # Install dependencies
     # `parcel` does not support `NODE_PATH`
     # so instead of
