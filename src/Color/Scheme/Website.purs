@@ -1,12 +1,3 @@
-module Color.Scheme.Website where
+module Color.Scheme.Website (module Color.Scheme.TempusDawn) where
 
-import CSS.Color (Color, black, gray, white)
-
-background ∷ Color
-background = white
-
-foreground ∷ Color
-foreground = black
-
-altForeground ∷ Color
-altForeground = gray
+import Color.Scheme.TempusDawn
