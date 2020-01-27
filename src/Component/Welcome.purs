@@ -1,17 +1,19 @@
 module Component.Welcome (welcome) where
 
-import CSS (CSS, alignItems, backgroundColor, black, color, column, display, flex, flexDirection, justifyContent, minHeight, vh, white)
+import CSS (CSS, absolute, alignItems, bottom, color, column, display, flex, flexDirection, fromString, justifyContent, key, left, minHeight, pct, position, px, vh)
 import CSS.Common (center)
 import CSS.Render.Concur.React (style, styledEl)
-import Component.Button (button)
+import CSS.TextAlign as TA
+import Color.Scheme.Website (altForeground)
 import Component.Heading (heading)
 import Component.Indicator (indicator)
 import Component.Subhead (subhead)
+import Component.Subsubhead (subsubhead)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (El, div, text)
-import Concur.React.Props (_id, onClick)
-import Prelude (($), (*>), (<>), bind, discard)
+import Concur.React.Props (_id)
+import Prelude (($), (*>), discard)
 
 heroStyle ∷ CSS
 heroStyle = do
@@ -25,18 +27,22 @@ hero ∷ El
 hero = styledEl div heroStyle
 
 welcome ∷ ∀ a. Widget HTML a
-welcome =
-  let
-    makeWelcome props ctaText = hero
-      ([ _id "welcome" ] <> props)
-      [ heading [] [ text "Welcome to the Internet" ]
-      , subhead [] [ text "The Internet Is Full of Buttons" ]
-      , indicator
-      , button [ onClick ] [ text ctaText ]
+welcome = hero
+  [ _id "welcome" ]
+  [ subhead [] [ text "Hello! I'm" ]
+  , heading [] [ text "Justin Lovinger" ]
+  , div
+    [ style $ color altForeground *> TA.textAlign TA.center ]
+    [ subsubhead [] [ text "Machine Learning Expert" ]
+    , subsubhead [] [ text "Full Stack Web Developer" ]
+    , subsubhead [] [ text "Amateur Bunny Photographer" ]
+    ]
+  , div
+      [ style $ do
+          position absolute
+          bottom (px 20.0)
+          left (pct 50.0)
+          key (fromString "transform") "translateX(-50%)"
       ]
-  in do
-    _ ← makeWelcome [] "It's Too Bright!"
-    _ ← makeWelcome
-      [ style $ heroStyle *> color white *> backgroundColor black ]
-      "It's Too Dark!"
-    welcome
+      [ indicator ]
+  ]

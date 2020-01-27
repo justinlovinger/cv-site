@@ -2,7 +2,8 @@ module Component.App where
 
 import Prelude
 
-import CSS (GenericFontFamily(..), element, fontFamily, fromString, key, render, renderedSheet, sansSerif, (?))
+import CSS (GenericFontFamily(..), background, color, element, fontFamily, fromString, key, render, renderedSheet, sansSerif, (?))
+import Color.Scheme.Website as C
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Welcome (welcome)
 import Concur.Core (Widget)
@@ -17,6 +18,8 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
   element "body" ? do
     key (fromString "margin") "0"
     fontFamily [ ] (GenericFontFamily (fromString "system-ui") :| [ sansSerif ])
+    color (C.foreground)
+    background (C.background)
   
   bouncePauseStylesheet
 
