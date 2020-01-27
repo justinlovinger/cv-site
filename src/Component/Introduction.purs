@@ -1,4 +1,4 @@
-module Component.Welcome (welcome) where
+module Component.Introduction (introduction) where
 
 import CSS (CSS, absolute, alignItems, bottom, color, column, display, flex, flexDirection, fromString, justifyContent, key, left, minHeight, pct, position, px, vh)
 import CSS.Common (center)
@@ -13,7 +13,7 @@ import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (El, div, text)
 import Concur.React.Props (_id)
-import Prelude (($), (*>), discard)
+import Prelude (($), discard)
 
 heroStyle ∷ CSS
 heroStyle = do
@@ -27,8 +27,8 @@ heroStyle = do
 hero ∷ El
 hero = styledEl div heroStyle
 
-welcome ∷ ∀ a. Widget HTML a
-welcome = hero
+introduction ∷ ∀ a. Widget HTML a
+introduction = hero
   [ _id "welcome" ]
   [ subhead [] [ text "Hello! I'm" ]
   , heading [] [ text "Justin Lovinger" ]
