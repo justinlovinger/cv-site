@@ -21,6 +21,7 @@ heroStyle = do
   flexDirection column
   alignItems center
   justifyContent center
+  TA.textAlign TA.center
   minHeight $ vh 100.0
 
 hero ∷ El
@@ -32,7 +33,7 @@ welcome = hero
   [ subhead [] [ text "Hello! I'm" ]
   , heading [] [ text "Justin Lovinger" ]
   , div
-    [ style $ color altForeground *> TA.textAlign TA.center ]
+    [ style $ color altForeground ]
     [ subsubhead [] [ text "Machine Learning Expert" ]
     , subsubhead [] [ text "Full Stack Web Developer" ]
     , subsubhead [] [ text "Amateur Bunny Photographer" ]
