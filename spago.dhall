@@ -7,12 +7,16 @@ You can edit this file as you like.
 , name =
     "nix-purescript-concur-frontend-starter"
 , dependencies =
-    [ "concur-react"
+    [ "behaviors"
+    , "canvas"
+    , "concur-react"
     , "console"
     , "css"
     , "datetime"
+    , "drawing"
     , "effect"
     , "foreign-object"
+    , "random"
     , "record"
     , "spec"
     ]
