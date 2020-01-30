@@ -17,9 +17,10 @@ import Data.Int (toNumber)
 import Data.Maybe (Maybe(Just,Nothing), maybe)
 import Data.Newtype (unwrap)
 import Data.Set (isEmpty)
+import Effect.Aff (Milliseconds(Milliseconds), delay)
+import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Effect.Random (random)
-import Effect.Timer (setTimeout)
 import FRP.Behavior (Behavior, animate, fixB, integral', switcher)
 import FRP.Behavior.Mouse (buttons)
 import FRP.Behavior.Mouse as Mouse
@@ -93,16 +94,17 @@ dynamicCircles ∷ ∀ a. Number → Number → Widget HTML a
 dynamicCircles w h = do
     canvasId ← liftEffect random
     canvas [ _id $ show canvasId, width (show w), height (show h) ] []
-      <|> (liftEffect (runCanvas canvasId) *> empty)
+      <|> (liftAff (runCanvas canvasId) *> empty)
   where
     runCanvas idx = do
-      mcanvas ← getCanvasElementById $ show idx
+      -- Start with delay, for canvas to mount.
+      -- Canvas should mount
+      -- before async runs.
+      _ ← delay (Milliseconds 10.0)
+      mcanvas ← liftEffect $ getCanvasElementById $ show idx
       case mcanvas of
         Just canvas → do
-          ctx ← getContext2D canvas
-          mouse ← getMouse
-          _ ← animate (scene mouse { w, h }) (render ctx)
-          pure unit
-        Nothing → do -- Wait for canvas
-          _ ← setTimeout 10 (runCanvas idx)
-          pure unit
+          ctx ← liftEffect $ getContext2D canvas
+          mouse ← liftEffect $ getMouse
+          liftEffect $ animate (scene mouse { w, h }) (render ctx)
+        Nothing → empty
