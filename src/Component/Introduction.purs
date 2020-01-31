@@ -15,9 +15,12 @@ import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (El, div, text)
 import Concur.React.Props (_id)
+import Control.Alt ((<|>))
 import Data.Int (toNumber)
+import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Prelude (($), bind, discard, negate)
+import Web.Event.Resize (waitForResize)
 import Web.HTML (window)
 import Web.HTML.Window (innerHeight, innerWidth)
 
@@ -81,5 +84,7 @@ introduction = do
           ]
           [ indicator ]
       ]
+      <|> (liftAff waitForResize) -- Update canvas size on resize
+    introduction
   where
     space = vh 10.0
