@@ -1,6 +1,6 @@
 -- Based on [purescript-behaviors example]
 -- (https://github.com/paf31/purescript-behaviors/blob/master/test/Main.purs).
-module Component.Dynamiccircles (dynamicCircles) where
+module Component.DynamicCircles (dynamicCircles) where
 
 import Prelude
 

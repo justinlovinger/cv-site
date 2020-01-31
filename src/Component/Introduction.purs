@@ -6,7 +6,7 @@ import CSS.Overflow (hidden, overflow)
 import CSS.Render.Concur.React (style, styledEl)
 import CSS.TextAlign as TA
 import Color.Scheme.Website (altForeground)
-import Component.Dynamiccircles (dynamicCircles)
+import Component.DynamicCircles (dynamicCircles)
 import Component.Heading (heading)
 import Component.Indicator (indicator)
 import Component.Subhead (subhead)
