@@ -18,7 +18,8 @@ import Data.Int (toNumber)
 import Data.Maybe (Maybe(Just,Nothing), maybe)
 import Data.Newtype (unwrap)
 import Data.Set (isEmpty)
-import Effect.Aff (Milliseconds(Milliseconds), delay)
+import Data.Time.Duration (Milliseconds(Milliseconds), Minutes(Minutes), fromDuration)
+import Effect.Aff (delay)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Effect.Random (random)
@@ -95,17 +96,24 @@ dynamicCircles ∷ ∀ a. Number → Number → Widget HTML a
 dynamicCircles w h = do
     canvasId ← liftEffect random
     canvas [ _id $ show canvasId, width (show w), height (show h) ] []
-      <|> (liftAff (runCanvas canvasId) *> empty)
-  where
-    runCanvas idx = do
       -- Start with delay, for canvas to mount.
       -- Canvas should mount
       -- before async runs.
-      _ ← delay (Milliseconds 10.0)
+      <|> (liftAff (delay (Milliseconds 0.0) `discard` \_ → runCanvas canvasId) *> empty)
+  where
+    runCanvas idx = do
       mcanvas ← liftEffect $ getCanvasElementById $ show idx
       case mcanvas of
         Just canvas → do
           ctx ← liftEffect $ getContext2D canvas
           mouse ← liftEffect $ getMouse
-          liftEffect $ animate (scene mouse { w, h }) (render ctx)
+          stop ← liftEffect $ animate (scene mouse { w, h }) (render ctx)
+          -- The animation may freeze
+          -- after a long period of time
+          -- in the background.
+          -- We can periodically restart the animation
+          -- to prevent freezing.
+          delay (fromDuration $ Minutes 60.0)
+          liftEffect stop
+          runCanvas idx
         Nothing → empty
