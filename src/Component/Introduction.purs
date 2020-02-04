@@ -17,6 +17,7 @@ import Concur.React.DOM (El, div, text)
 import Concur.React.Props (_id)
 import Control.Alt ((<|>))
 import Data.Int (toNumber)
+import Effect.AVar (empty, tryPut)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Prelude (($), bind, discard, negate)
@@ -41,6 +42,7 @@ introduction = do
     _window ← liftEffect window
     _innerWidth ← liftEffect $ innerWidth _window
     _innerHeight ← liftEffect $ innerHeight _window
+    dynamicCirclesWillUnmount ← liftEffect empty
     hero
       [ _id "welcome" ]
       [ div
@@ -65,7 +67,7 @@ introduction = do
               -- fixes that.
               overflow hidden
           ]
-          [ dynamicCircles (toNumber _innerWidth) (toNumber _innerHeight) ]
+          [ dynamicCircles dynamicCirclesWillUnmount (toNumber _innerWidth) (toNumber _innerHeight) ]
       , subhead [] [ text "Hello! I'm" ]
       , heading [] [ text "Justin Lovinger" ]
       , div
@@ -85,6 +87,7 @@ introduction = do
           [ indicator ]
       ]
       <|> (liftAff waitForResize) -- Update canvas size on resize
+    _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
     introduction
   where
     space = vh 10.0

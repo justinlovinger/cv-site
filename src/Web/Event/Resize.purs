@@ -13,9 +13,9 @@ import Web.HTML.Window (toEventTarget)
 
 waitForResize ∷ Aff Unit
 waitForResize = do
-  var ← liftEffect $ empty
+  var ← liftEffect empty
   reloadListener ← liftEffect $ eventListener $ \_ → tryPut true var
-  _window ← liftEffect $ window
+  _window ← liftEffect window
   let
     reloadEvent = EventType "resize"
     windowTarget = toEventTarget _window
