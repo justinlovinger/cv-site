@@ -18,7 +18,7 @@ import Data.Int (toNumber)
 import Data.Maybe (Maybe(Just,Nothing), maybe)
 import Data.Newtype (unwrap)
 import Data.Set (isEmpty)
-import Data.Time.Duration (Milliseconds(Milliseconds), Minutes(Minutes), fromDuration)
+import Data.Time.Duration (Milliseconds(Milliseconds))
 import Effect.AVar (AVar)
 import Effect.Aff (delay, forkAff)
 import Effect.Aff.AVar (take)
@@ -111,15 +111,7 @@ dynamicCircles willUnmount w h = do
           mouse ← liftEffect $ getMouse
           stop ← liftEffect $ animate (scene mouse { w, h }) (render ctx)
           -- Stop on unmount
-          _ ← forkAff $ do
+          forkAff $ do
              _ ← take willUnmount
              liftEffect stop
-          -- The animation may freeze
-          -- after a long period of time
-          -- in the background.
-          -- We can periodically restart the animation
-          -- to prevent freezing.
-          delay (fromDuration $ Minutes 60.0)
-          liftEffect stop
-          runCanvas idx
         Nothing → empty

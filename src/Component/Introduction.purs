@@ -14,13 +14,15 @@ import Component.Subsubhead (subsubhead)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (El, div, text)
-import Concur.React.Props (_id)
+import Concur.React.Props (_id, onMouseEnter, onMouseLeave)
 import Control.Alt ((<|>))
 import Data.Int (toNumber)
-import Effect.AVar (empty, tryPut)
+import Effect.AVar (AVar, empty, tryPut)
+import Effect.Aff (launchAff)
+import Effect.Aff.AVar (take)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
-import Prelude (($), bind, discard, negate)
+import Prelude ((<>), ($), bind, discard, negate)
 import Web.Event.Resize (waitForResize)
 import Web.HTML (window)
 import Web.HTML.Window (innerHeight, innerWidth)
@@ -39,10 +41,34 @@ hero = styledEl div heroStyle
 
 introduction ∷ ∀ a. Widget HTML a
 introduction = do
-    hero
-      [ _id "welcome" ]
-      [ fullScreenBackgroundDynamicCircles
-      , div
+    dynamicCirclesWillUnmount ← liftEffect empty
+    _ ← intro
+      [ onMouseLeave ]
+      [ div
+          [ style $ do
+              position absolute
+              top (px 0.0)
+              left (px 0.0)
+              width (pct 100.0)
+              height (pct 100.0)
+              zIndex (-1000)
+              -- The `dynamicCircles` component may end up slightly larger
+              -- than the window
+              -- due to scrollbars.
+              -- Hiding the overflow
+              -- fixes that.
+              overflow hidden
+          ]
+          [ fullScreenDynamicCircles dynamicCirclesWillUnmount ]
+      ]
+    _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
+    _ ← intro [ onMouseEnter ] []
+    introduction
+  where
+    intro props children = hero
+      ([ _id "welcome" ] <> props)
+      ( children <>
+      [ div
           [ style do
               color altForeground
               fontSize (em 0.7)
@@ -52,11 +78,11 @@ introduction = do
       , subhead [] [ text "Hello! I'm" ]
       , heading [] [ text "Justin Lovinger" ]
       , div
-        [ style $ color altForeground ]
-        [ subsubhead [] [ text "Machine Learning Expert" ]
-        , subsubhead [] [ text "Full Stack Web Developer" ]
-        , subsubhead [] [ text "Amateur Bunny Photographer" ]
-        ]
+          [ style $ color altForeground ]
+          [ subsubhead [] [ text "Machine Learning Expert" ]
+          , subsubhead [] [ text "Full Stack Web Developer" ]
+          , subsubhead [] [ text "Amateur Bunny Photographer" ]
+          ]
       , div [ style $ marginTop space ] [] -- Spacer, for hint
       , div
           [ style $ do
@@ -66,30 +92,20 @@ introduction = do
               key (fromString "transform") "translateX(-50%)"
           ]
           [ indicator ]
-      ]
-  where
+      ])
+
     space = vh 10.0
-    fullScreenBackgroundDynamicCircles = do
+
+    fullScreenDynamicCircles ∷ ∀ b c. AVar c → Widget HTML b
+    fullScreenDynamicCircles willUnmount = do
       _window ← liftEffect window
       _innerWidth ← liftEffect $ innerWidth _window
       _innerHeight ← liftEffect $ innerHeight _window
       dynamicCirclesWillUnmount ← liftEffect empty
-      div
-        [ style $ do
-            position absolute
-            top (px 0.0)
-            left (px 0.0)
-            width (pct 100.0)
-            height (pct 100.0)
-            zIndex (-1000)
-            -- The `dynamicCircles` component may end up slightly larger
-            -- than the window
-            -- due to scrollbars.
-            -- Hiding the overflow
-            -- fixes that.
-            overflow hidden
-        ]
-        [ dynamicCircles dynamicCirclesWillUnmount (toNumber _innerWidth) (toNumber _innerHeight) ]
+      _ ← liftEffect $ launchAff $ do
+         _ ← take willUnmount
+         liftEffect $ tryPut true dynamicCirclesWillUnmount
+      dynamicCircles dynamicCirclesWillUnmount (toNumber _innerWidth) (toNumber _innerHeight) 
         <|> (liftAff waitForResize) -- Update canvas size on resize
       _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
-      fullScreenBackgroundDynamicCircles
+      fullScreenDynamicCircles willUnmount
