@@ -39,35 +39,16 @@ hero = styledEl div heroStyle
 
 introduction ∷ ∀ a. Widget HTML a
 introduction = do
-    _window ← liftEffect window
-    _innerWidth ← liftEffect $ innerWidth _window
-    _innerHeight ← liftEffect $ innerHeight _window
-    dynamicCirclesWillUnmount ← liftEffect empty
     hero
       [ _id "welcome" ]
-      [ div
+      [ fullScreenBackgroundDynamicCircles
+      , div
           [ style do
               color altForeground
               fontSize (em 0.7)
               marginBottom space
           ]
           [ text "click-hold the background" ] -- Hint
-      , div
-          [ style $ do -- Full screen background
-              position absolute
-              top (px 0.0)
-              left (px 0.0)
-              width (pct 100.0)
-              height (pct 100.0)
-              zIndex (-1000)
-              -- The `dynamicCircles` component may end up slightly larger
-              -- than the window
-              -- due to scrollbars.
-              -- Hiding the overflow
-              -- fixes that.
-              overflow hidden
-          ]
-          [ dynamicCircles dynamicCirclesWillUnmount (toNumber _innerWidth) (toNumber _innerHeight) ]
       , subhead [] [ text "Hello! I'm" ]
       , heading [] [ text "Justin Lovinger" ]
       , div
@@ -86,8 +67,29 @@ introduction = do
           ]
           [ indicator ]
       ]
-      <|> (liftAff waitForResize) -- Update canvas size on resize
-    _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
-    introduction
   where
     space = vh 10.0
+    fullScreenBackgroundDynamicCircles = do
+      _window ← liftEffect window
+      _innerWidth ← liftEffect $ innerWidth _window
+      _innerHeight ← liftEffect $ innerHeight _window
+      dynamicCirclesWillUnmount ← liftEffect empty
+      div
+        [ style $ do
+            position absolute
+            top (px 0.0)
+            left (px 0.0)
+            width (pct 100.0)
+            height (pct 100.0)
+            zIndex (-1000)
+            -- The `dynamicCircles` component may end up slightly larger
+            -- than the window
+            -- due to scrollbars.
+            -- Hiding the overflow
+            -- fixes that.
+            overflow hidden
+        ]
+        [ dynamicCircles dynamicCirclesWillUnmount (toNumber _innerWidth) (toNumber _innerHeight) ]
+        <|> (liftAff waitForResize) -- Update canvas size on resize
+      _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
+      fullScreenBackgroundDynamicCircles
