@@ -17,9 +17,6 @@ import Concur.React.DOM (El, div, text)
 import Concur.React.Props (_id, onMouseEnter, onMouseLeave)
 import Control.Alt ((<|>))
 import Data.Int (toNumber)
-import Effect.AVar (AVar, empty, tryPut)
-import Effect.Aff (launchAff)
-import Effect.Aff.AVar (take)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Prelude ((<>), ($), bind, discard, negate)
@@ -41,7 +38,6 @@ hero = styledEl div heroStyle
 
 introduction ∷ ∀ a. Widget HTML a
 introduction = do
-    dynamicCirclesWillUnmount ← liftEffect empty
     _ ← intro
       [ onMouseLeave ]
       [ div
@@ -59,9 +55,8 @@ introduction = do
               -- fixes that.
               overflow hidden
           ]
-          [ fullScreenDynamicCircles dynamicCirclesWillUnmount ]
+          [ fullScreenDynamicCircles ]
       ]
-    _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
     _ ← intro [ onMouseEnter ] []
     introduction
   where
@@ -96,16 +91,11 @@ introduction = do
 
     space = vh 10.0
 
-    fullScreenDynamicCircles ∷ ∀ b c. AVar c → Widget HTML b
-    fullScreenDynamicCircles willUnmount = do
+    fullScreenDynamicCircles ∷ ∀ b. Widget HTML b
+    fullScreenDynamicCircles = do
       _window ← liftEffect window
       _innerWidth ← liftEffect $ innerWidth _window
       _innerHeight ← liftEffect $ innerHeight _window
-      dynamicCirclesWillUnmount ← liftEffect empty
-      _ ← liftEffect $ launchAff $ do
-         _ ← take willUnmount
-         liftEffect $ tryPut true dynamicCirclesWillUnmount
-      dynamicCircles dynamicCirclesWillUnmount (toNumber _innerWidth) (toNumber _innerHeight) 
+      dynamicCircles (toNumber _innerWidth) (toNumber _innerHeight)
         <|> (liftAff waitForResize) -- Update canvas size on resize
-      _ ← liftEffect $ tryPut true dynamicCirclesWillUnmount
-      fullScreenDynamicCircles willUnmount
+      fullScreenDynamicCircles

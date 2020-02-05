@@ -18,10 +18,9 @@ import Data.Int (toNumber)
 import Data.Maybe (Maybe(Just,Nothing), maybe)
 import Data.Newtype (unwrap)
 import Data.Set (isEmpty)
-import Data.Time.Duration (Milliseconds(Milliseconds))
-import Effect.AVar (AVar)
-import Effect.Aff (delay, forkAff)
-import Effect.Aff.AVar (take)
+import Data.Time.Duration (Milliseconds(Milliseconds), Seconds(Seconds), fromDuration)
+import Effect (Effect)
+import Effect.Aff (Aff, delay, launchAff)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Effect.Random (random)
@@ -94,24 +93,31 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
               dy = y - toNumber my / scaleFactor
           in dx * dx + dy * dy
 
-dynamicCircles ∷ ∀ a b. AVar b → Number → Number → Widget HTML a
-dynamicCircles willUnmount w h = do
+dynamicCircles ∷ ∀ a. Number → Number → Widget HTML a
+dynamicCircles w h = do
     canvasId ← liftEffect random
     canvas [ _id $ show canvasId, width (show w), height (show h) ] []
       -- Start with delay, for canvas to mount.
       -- Canvas should mount
       -- before async runs.
-      <|> (liftAff (delay (Milliseconds 0.0) `discard` \_ → runCanvas canvasId) *> empty)
+      <|> (liftAff (delay (Milliseconds 0.0) `discard` \_ → liftEffect $ runCanvas canvasId) *> empty)
   where
+    runCanvas ∷ Number → Effect Unit
     runCanvas idx = do
-      mcanvas ← liftEffect $ getCanvasElementById $ show idx
+      mcanvas ← getCanvasElementById $ show idx
       case mcanvas of
         Just canvas → do
-          ctx ← liftEffect $ getContext2D canvas
-          mouse ← liftEffect $ getMouse
-          stop ← liftEffect $ animate (scene mouse { w, h }) (render ctx)
-          -- Stop on unmount
-          forkAff $ do
-             _ ← take willUnmount
-             liftEffect stop
-        Nothing → empty
+          ctx ← getContext2D canvas
+          mouse ← getMouse
+          stop ← animate (scene mouse { w, h }) (render ctx)
+          _ ← launchAff $ stopWithoutCanvas idx stop -- Stop when canvas disappears
+          pure unit
+        Nothing → pure unit
+
+    stopWithoutCanvas ∷ Number → Effect Unit → Aff Unit
+    stopWithoutCanvas idx stop = do
+      delay (fromDuration $ Seconds 2.0)
+      mcanvas ← liftEffect $ getCanvasElementById $ show idx
+      case mcanvas of
+        Just canvas → stopWithoutCanvas idx stop
+        Nothing → liftEffect stop
