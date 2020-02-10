@@ -2,7 +2,7 @@ module Component.App where
 
 import Prelude
 
-import CSS ((?), GenericFontFamily(..), Predicate(Pseudo), Refinement(Refinement), background, color, element, fontFamily, fromString, key, noneTextDecoration, render, renderedSheet, sansSerif, textDecoration, with)
+import CSS ((?), GenericFontFamily(..), Predicate(Pseudo), Refinement(Refinement), background, color, element, fontFamily, fontSize, fromString, key, noneTextDecoration, pct, render, renderedSheet, sansSerif, textDecoration, with)
 import Color.Scheme.Website as C
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Introduction (introduction)
@@ -19,6 +19,7 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
   element "body" ? do
     key (fromString "margin") "0"
     fontFamily [ ] (GenericFontFamily (fromString "system-ui") :| [ sansSerif ])
+    fontSize (pct 100.0)
     color C.foreground
     background C.background
 

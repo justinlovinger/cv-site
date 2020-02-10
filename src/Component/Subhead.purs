@@ -8,7 +8,7 @@ import Prelude (($), discard)
 
 subheadStyle ∷ CSS
 subheadStyle = do
-  fontSize $ fromString "calc(16px + 1.5vmin)"
+  fontSize $ fromString "calc(2em + 2vmin)"
   margin (px 0.0) (px 0.0) (em 0.1) (px 0.0)
   textAlign center
 

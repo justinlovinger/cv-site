@@ -7,8 +7,8 @@ import Prelude (($), discard)
 
 paragraphStyle ∷ CSS
 paragraphStyle = do
-  fontSize $ fromString "calc(10px + 0.8vmin)"
-  margin (em 1.0) (px 0.0) (px 0.0) (px 0.0)
+  fontSize $ fromString "calc(1em + 0.5vmin)"
+  margin (em 0.5) (px 0.0) (px 0.0) (px 0.0)
 
 paragraph ∷ El
 paragraph = styledEl p paragraphStyle 

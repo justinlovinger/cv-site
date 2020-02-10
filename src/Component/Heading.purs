@@ -8,7 +8,7 @@ import Prelude (($), discard)
 
 headingStyle ∷ CSS
 headingStyle = do
-  fontSize $ fromString "calc(32px + 2.5vmin)"
+  fontSize $ fromString "calc(3em + 2.5vmin)"
   margin (px 0.0) (px 0.0) (em 0.1) (px 0.0)
   textAlign center
 

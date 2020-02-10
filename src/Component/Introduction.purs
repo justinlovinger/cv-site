@@ -61,12 +61,12 @@ introduction = do
     introduction
   where
     intro props children = hero
-      ([ _id "welcome" ] <> props)
+      ([ _id "introduction" ] <> props)
       ( children <>
       [ div
           [ style do
               color altForeground
-              fontSize (em 0.7)
+              fontSize (em 0.8)
               marginBottom space
           ]
           [ text "click-hold the background" ] -- Hint
