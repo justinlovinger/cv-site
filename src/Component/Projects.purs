@@ -26,7 +26,7 @@ projects = div
       [ text "Wondering what I've done?" ]
   , timeline $ map
       (\project → Tuple
-        project.date
+        project.published
         (div'
           [ subsubhead
               [ style $ subsubheadStyle *> textAlign leftTextAlign ]

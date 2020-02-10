@@ -2,17 +2,18 @@ module Projects (Project, projects) where
 
 import Prelude
 
-import Data.Date (Date, Month(December,February,July,June,October))
+import Data.Date (Date, Month(December,February,July,June,March,October))
 import Data.Date.Unsafe (unsafeDate)
 import Data.Maybe (Maybe(Just,Nothing))
 import Generated.Files (files)
 import Web.HTML.History (URL(URL))
 
 type Project =
-  { date ∷ Date
+  { name ∷ String
+  , published ∷ Date
+  , updated ∷ Date
   , description ∷ String -- No punctuation
   , longDescription ∷ Maybe String
-  , name ∷ String
   , teamRole ∷ Maybe String
   , url ∷ Maybe URL
   }
@@ -23,38 +24,43 @@ type Project =
 -- and will not change.
 projects ∷ Array Project 
 projects =
-  [ { date : unsafeDate 2014 October 20 -- Date of last commit
+  [ { name : "Labyrinth RL"
+    , published : unsafeDate 2014 October 20 -- Date of last commit
+    , updated : unsafeDate 2014 October 20 -- Never updated
     , description : "Traditional roguelike game with unique victory condition"
     , longDescription : Nothing
-    , name: "Labyrinth RL"
     , teamRole : Nothing
     , url : Just $ URL files.projects."labyrinth-rl".url
     }
-  , { date : unsafeDate 2014 December 10 -- Date of last modified file
+  , { name : "Gladiator Manager"
+    , published : unsafeDate 2014 December 10 -- Date of last modified file
+    , updated : unsafeDate 2014 December 10 -- Never updated
     , description : "Management game with physics driven combat"
     , longDescription : Nothing
-    , name : "Gladiator Manager"
     , teamRole : Nothing
     , url : Just $ URL files.projects."gladiator-manager".url
     }
-  , { date : unsafeDate 2016 February 12 -- Date of first App Engine version
+  , { name : "Gist"
+    , published : unsafeDate 2016 February 12 -- Date of first App Engine version
+    , updated : unsafeDate 2017 March 27 -- Date of second to last commit. Last notes that change was made earlier, but not committed.
     , description : "Website to automatically summarize text"
     , longDescription : Nothing
-    , name : "Gist"
     , teamRole : Just "Team Lead and AI"
     , url : Just $ URL "https://gist.justinlovinger.com/"
     }
-  , { date : unsafeDate 2016 July 26 -- Date of v1.0.0 in Clever Surveys repo
+  , { name : "Clever Surveys"
+    , published : unsafeDate 2016 July 26 -- Date of v1.0.0 in Clever Surveys repo
+    , updated : unsafeDate 2017 March 7 -- Date of last non-hotfix patch (v1.1.0)
     , description : "Website with predictive machine learning trained by survey responses"
     , longDescription : Just "Website with predictive machine learning trained by survey responses. Users can answer surveys and receive predictions. Users can create surveys with built-in survey builder."
-    , name : "Clever Surveys"
     , teamRole : Nothing
     , url : Just $ URL "https://cleversurveys.com/"
     }
-  , { date : unsafeDate 2018 June 5 -- Date of first App Engine version
+  , { name : "Reader"
+    , published : unsafeDate 2018 June 5 -- Date of first App Engine version
+    , updated : unsafeDate 2018 June 9 -- Date of last tagged version (v0.2.0)
     , description : "Progressive web app for reading pdf ebooks"
     , longDescription : Nothing
-    , name : "Reader"
     , teamRole : Nothing
     , url : Just $ URL "https://reader.justinlovinger.com/"
     }
