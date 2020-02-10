@@ -6,6 +6,7 @@ import CSS (GenericFontFamily(..), background, color, element, fontFamily, fromS
 import Color.Scheme.Website as C
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Introduction (introduction)
+import Component.Projects (projects)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div')
@@ -24,4 +25,7 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
   bouncePauseStylesheet
 
 app ∷ ∀ a. Widget HTML a
-app = div' [ introduction ]
+app = div'
+  [ introduction
+  , projects
+  ]

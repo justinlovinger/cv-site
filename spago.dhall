@@ -16,6 +16,7 @@ You can edit this file as you like.
     , "drawing"
     , "effect"
     , "foreign-object"
+    , "formatters"
     , "random"
     , "record"
     , "spec"
