@@ -1,6 +1,6 @@
 module Component.Timeline where
 
-import CSS (absolute, alignItems, background, border, display, em, flex, flexGrow, flexShrink, height, left, marginBottom, padding, paddingBottom, paddingTop, pct, position, px, relative, solid, vw, width, zIndex)
+import CSS (absolute, alignItems, background, bold, border, display, em, flex, flexGrow, flexShrink, fontWeight, height, left, marginBottom, padding, paddingBottom, paddingTop, pct, position, px, relative, solid, vw, width, zIndex)
 import CSS.Common (center)
 import CSS.Render.Concur.React (style)
 import CSS.TextAlign as TA
@@ -61,11 +61,12 @@ timeline datedWidgets = div
     dateWidget date = div
       [ style $ do
           border solid lineWidth lineColor
-          width (dateWidthUnit dateWidthNum)
-          flexShrink 0
-          TA.textAlign TA.center
           paddingTop (em 1.0)
           paddingBottom (em 1.0)
+          width (dateWidthUnit dateWidthNum)
+          flexShrink 0
+          fontWeight bold
+          TA.textAlign TA.center
           background (C.background) -- To hide line
       ]
       [ text $ dateFormat $ DateTime date zeroTime ]
