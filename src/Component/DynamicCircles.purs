@@ -57,7 +57,7 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
         let x = toNumber i
             y = toNumber j
             d = dist x y m
-            size = (1.0 + sw) / (d + 1.5) - 0.2
+            size = (1.0 + sw) / (d + 1.5)
         guard $ size > 0.0
         pure { x
              , y
@@ -94,7 +94,7 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
   scaleFactor = (max w h) / (toNumber $ numCircles - 1)
 
   numCircles ∷ Int
-  numCircles = 17
+  numCircles = 13
 
 dynamicCircles ∷ ∀ a. Number → Number → Widget HTML a
 dynamicCircles w h = do
