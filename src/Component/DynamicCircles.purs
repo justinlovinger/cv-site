@@ -39,8 +39,8 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
   background ∷ Drawing
   background = filled (fillColor C.background) (rectangle 0.0 0.0 w h)
 
-  scaleFactor ∷ Number
-  scaleFactor = max w h / 16.0
+  renderCircles ∷ Array Circle → Drawing
+  renderCircles = foldMap renderCircle
 
   renderCircle ∷ Circle → Drawing
   renderCircle { x, y, size } =
@@ -49,8 +49,25 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
         (outlineColor C.altBackground <> lineWidth ((1.0 + size * 2.0) / scaleFactor))
         (circle 0.0 0.0 0.5)
 
-  renderCircles ∷ Array Circle → Drawing
-  renderCircles = foldMap renderCircle
+  circles ∷ Behavior (Array Circle)
+  circles = toCircles <$> position mouse <*> swell where
+    toCircles m sw = do
+        i ← 0 .. (numCircles - 1)
+        j ← 0 .. (numCircles - 1)
+        let x = toNumber i
+            y = toNumber j
+            d = dist x y m
+            size = (1.0 + sw) / (d + 1.5) - 0.2
+        guard $ size > 0.0
+        pure { x
+             , y
+             , size
+             }
+      where
+        dist x y = maybe infinity \{ x: mx, y: my } →
+          let dx = x - (toNumber mx) / scaleFactor
+              dy = y - (toNumber my) / scaleFactor
+          in dx * dx + dy * dy
 
   -- `swell` is an interactive function of time defined by a differential equation:
   --
@@ -73,25 +90,11 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
       f bs s ds | isEmpty bs = -8.0 * (s - 1.0) - ds * 2.0
                 | otherwise = 2.0 * (4.0 - s)
 
-  circles ∷ Behavior (Array Circle)
-  circles = toCircles <$> position mouse <*> swell where
-    toCircles m sw = do
-        i <- 0 .. 16
-        j <- 0 .. 16
-        let x = toNumber i
-            y = toNumber j
-            d = dist x y m
-            size = (1.0 + sw) / (d + 1.5) - 0.2
-        guard $ size > 0.0
-        pure { x
-             , y
-             , size
-             }
-      where
-        dist x y = maybe infinity \{ x: mx, y: my } →
-          let dx = x - toNumber mx / scaleFactor
-              dy = y - toNumber my / scaleFactor
-          in dx * dx + dy * dy
+  scaleFactor ∷ Number
+  scaleFactor = (max w h) / (toNumber $ numCircles - 1)
+
+  numCircles ∷ Int
+  numCircles = 17
 
 dynamicCircles ∷ ∀ a. Number → Number → Widget HTML a
 dynamicCircles w h = do
