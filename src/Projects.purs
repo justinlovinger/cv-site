@@ -2,7 +2,7 @@ module Projects (Project, projects) where
 
 import Prelude
 
-import Data.Date (Date, Month(December,February,July,June,March,October))
+import Data.Date (Date, Month(February,March,April,June,July,September,October,November,December))
 import Data.Date.Unsafe (unsafeDate)
 import Data.Maybe (Maybe(Just,Nothing))
 import Generated.Files (files)
@@ -11,7 +11,7 @@ import Web.HTML.History (URL(URL))
 type Project =
   { name ∷ String
   , published ∷ Date
-  , updated ∷ Date
+  , updated ∷ Date -- Last major update
   , description ∷ String -- No punctuation
   , longDescription ∷ Maybe String
   , teamRole ∷ Maybe String
@@ -55,6 +55,22 @@ projects =
     , longDescription : Just "Website with predictive machine learning trained by survey responses. Users can answer surveys and receive predictions. Users can create surveys with built-in survey builder."
     , teamRole : Nothing
     , url : Just $ URL "https://cleversurveys.com/"
+    }
+  , { name : "Optimal"
+    , published : unsafeDate 2016 November 1 -- Date of v0.1.0
+    , updated : unsafeDate 2017 September 4 -- Date of v0.2.0
+    , description : "Python metaheuristic optimization library supporting Genetic Algorithms, Gravitational Search, Cross Entropy, and PBIL"
+    , longDescription : Nothing
+    , teamRole : Nothing
+    , url : Just $ URL "https://github.com/JustinLovinger/optimal"
+    }
+  , { name : "Learning"
+    , published : unsafeDate 2017 September 14 -- Date readme was added. Approximate date of public GitHub.
+    , updated : unsafeDate 2018 April 20 -- Date of last commit, before recent minor commits
+    , description : "Python machine learning library using powerful numerical optimization methods"
+    , longDescription : Nothing
+    , teamRole : Nothing
+    , url : Just $ URL "https://github.com/JustinLovinger/learning"
     }
   , { name : "Reader"
     , published : unsafeDate 2018 June 5 -- Date of first App Engine version
