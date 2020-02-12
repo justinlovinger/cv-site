@@ -1,6 +1,6 @@
 module Component.Introduction (introduction) where
 
-import CSS (CSS, absolute, alignItems, bottom, color, column, display, em, flex, flexDirection, fontSize, fromString, height, justifyContent, key, left, marginBottom, marginTop, minHeight, pct, position, px, top, vh, width, zIndex)
+import CSS (CSS, absolute, alignItems, bottom, color, column, display, flex, flexDirection, fromString, height, justifyContent, key, left, marginBottom, marginTop, minHeight, pct, position, px, top, vh, width, zIndex)
 import CSS.Common (center)
 import CSS.Overflow (hidden, overflow)
 import CSS.Render.Concur.React (style, styledEl)
@@ -11,6 +11,7 @@ import Component.Heading (heading)
 import Component.Indicator (indicator)
 import Component.Subhead (subhead)
 import Component.Subsubhead (subsubhead)
+import Component.Subtext (subtext, subtextStyle)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (El, div, text)
@@ -19,7 +20,7 @@ import Control.Alt ((<|>))
 import Data.Int (toNumber)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
-import Prelude ((<>), ($), bind, discard, negate)
+import Prelude ((<>), ($), (*>), bind, discard, negate)
 import Web.Event.Resize (waitForResize)
 import Web.HTML (window)
 import Web.HTML.Window (innerHeight, innerWidth)
@@ -63,12 +64,8 @@ introduction = do
     intro props children = hero
       ([ _id "introduction" ] <> props)
       ( children <>
-      [ div
-          [ style do
-              color altForeground
-              fontSize (em 0.8)
-              marginBottom space
-          ]
+      [ subtext
+          [ style $ subtextStyle *> marginBottom space ]
           [ text "click-hold the background" ] -- Hint
       , subhead [] [ text "Hello! I'm" ]
       , heading [] [ text "Justin Lovinger" ]

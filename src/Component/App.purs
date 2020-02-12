@@ -6,6 +6,7 @@ import CSS ((?), GenericFontFamily(..), Predicate(Pseudo), Refinement(Refinement
 import Color.Scheme.Website as C
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Introduction (introduction)
+import Component.Papers (papers)
 import Component.Projects (projects)
 import Concur.Core (Widget)
 import Concur.React (HTML)
@@ -36,4 +37,5 @@ app ∷ ∀ a. Widget HTML a
 app = div'
   [ introduction
   , projects
+  , papers
   ]

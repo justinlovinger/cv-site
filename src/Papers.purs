@@ -1,4 +1,4 @@
-module Papers (Paper, PaperType, papers) where
+module Papers (Paper, PaperType, fromPaperType, papers) where
 
 import Prelude
 
@@ -18,6 +18,11 @@ type Paper =
   }
 
 data PaperType = Conference | Journal | Thesis
+
+fromPaperType ∷ PaperType → String
+fromPaperType Conference = "conference"
+fromPaperType Journal = "journal"
+fromPaperType Thesis = "thesis"
 
 -- Note: dates are constructed
 -- with an unsafe `unsafeDate`
