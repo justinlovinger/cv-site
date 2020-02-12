@@ -4,6 +4,7 @@ import Prelude
 
 import CSS ((?), GenericFontFamily(..), Predicate(Pseudo), Refinement(Refinement), background, color, element, fontFamily, fontSize, fromString, key, noneTextDecoration, pct, render, renderedSheet, sansSerif, textDecoration, with)
 import Color.Scheme.Website as C
+import Component.Contact (contact, contactStylesheet)
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Introduction (introduction)
 import Component.Papers (papers)
@@ -32,10 +33,12 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
   (element "a" `with` Refinement [ Pseudo "visited", Pseudo "active" ]) ? color C.magenta
   
   bouncePauseStylesheet
+  contactStylesheet
 
 app ∷ ∀ a. Widget HTML a
 app = div'
   [ introduction
   , projects
   , papers
+  , contact
   ]
