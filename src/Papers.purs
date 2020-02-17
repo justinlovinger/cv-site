@@ -1,4 +1,4 @@
-module Papers (Paper, PaperType, fromPaperType, papers) where
+module Papers (Paper, Type_, papers) where
 
 import Prelude
 
@@ -10,19 +10,18 @@ import Web.HTML.History (URL(URL))
 
 type Paper =
   { name ∷ String
-  , type ∷ PaperType
+  , type ∷ Type_
   , published ∷ Date
   , description ∷ String -- No punctuation
   , documentUrl ∷ URL
   , url ∷ Maybe URL
   }
 
-data PaperType = Conference | Journal | Thesis
-
-fromPaperType ∷ PaperType → String
-fromPaperType Conference = "conference"
-fromPaperType Journal = "journal"
-fromPaperType Thesis = "thesis"
+data Type_ = Conference | Journal | Thesis
+instance showType_ ∷ Show Type_ where
+  show Conference = "conference"
+  show Journal = "journal"
+  show Thesis = "thesis"
 
 -- Note: dates are constructed
 -- with an unsafe `unsafeDate`

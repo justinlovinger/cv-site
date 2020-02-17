@@ -20,6 +20,7 @@ You can edit this file as you like.
     , "random"
     , "record"
     , "spec"
+    , "unordered-collections"
     ]
 , packages =
     ./packages.dhall

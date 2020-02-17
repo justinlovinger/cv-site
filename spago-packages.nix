@@ -965,6 +965,18 @@ let
         installPhase = "ln -s $src $out";
       };
 
+    "unordered-collections" = pkgs.stdenv.mkDerivation {
+        name = "unordered-collections";
+        version = "v1.8.2";
+        src = pkgs.fetchgit {
+          url = "https://github.com/fehrenbach/purescript-unordered-collections.git";
+          rev = "15bf60f1490ed15b81ff0436bcc3cc7f17a1eeef";
+          sha256 = "12ni0sqrp594zwrb6y0ckhdfpgci84z4cqaqkfib4d3zqpnizvml";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
     "unsafe-coerce" = pkgs.stdenv.mkDerivation {
         name = "unsafe-coerce";
         version = "v4.0.0";

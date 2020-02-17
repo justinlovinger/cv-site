@@ -15,7 +15,7 @@ import Concur.React.DOM (a, div, div', text)
 import Concur.React.Props (href)
 import Data.Maybe (Maybe(Just,Nothing))
 import Data.Tuple (Tuple(Tuple))
-import Prelude ((*>), ($), (<>), map)
+import Prelude ((*>), ($), (<>), map, show)
 import Papers as P
 import Web.HTML.History (URL(URL))
 
@@ -34,8 +34,8 @@ papers = div
                 [ a [ href $ fromURL paper.documentUrl ] [ text paper.name ] ]
             , subtext []
                 [ case paper.url of
-                    Just (URL url) → a [ href url ] [ text $ P.fromPaperType paper.type ]
-                    Nothing → text $ P.fromPaperType paper.type
+                    Just (URL url) → a [ href url ] [ text $ show paper.type ]
+                    Nothing → text $ show paper.type
                 ]
             , paragraph [] [ text (paper.description <> ".") ]
             ]
