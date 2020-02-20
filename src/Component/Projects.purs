@@ -14,20 +14,46 @@ import Concur.React (HTML)
 import Concur.React.DOM (div, input, label', li', text, ul)
 import Concur.React.Props (_type, checked, onChange)
 import Concur.React.Widgetable (toWidget)
-import Data.Array (concat, filter, foldl, zip)
+import Data.Array (concat, filter, foldl, mapMaybe, uncons, zip)
 import Data.Date (Date)
 import Data.HashSet (HashSet, delete, fromArray, insert, intersection)
 import Data.HeytingAlgebra (conj)
+import Data.Maybe (Maybe(Just,Nothing), fromMaybe, maybe)
+import Data.String (Pattern(Pattern), contains, joinWith, split, stripPrefix)
 import Data.Tag (Tag, has, hasIn, isIn, tags, toTag)
-import Data.Tuple (Tuple(Tuple), fst, snd)
-import Prelude ((*>), ($), (<>), (<$), (<<<), bind, discard, map, show)
+import Data.Tag.Encode (urlDecode, urlEncode)
+import Data.Tuple (Tuple(Tuple), fst, lookup, snd)
+import Effect.Class (liftEffect)
+import Foreign (unsafeToForeign)
+import Prelude ((*>), ($), (<>), (<$), (<<<), bind, discard, map, pure, show, unit)
 import Projects as P
+import Web.HTML (window)
+import Web.HTML.HTMLDocument (title)
+import Web.HTML.History (DocumentTitle(DocumentTitle), URL(URL), replaceState)
+import Web.HTML.Location (search)
+import Web.HTML.Window (document, history, location)
 
 type TimelineItem a = { date ∷ Date, tags ∷ HashSet Tag, widget ∷ Widget HTML a }
 
 projects ∷ ∀ a. Widget HTML a
-projects = projects' defaultActiveFilters
-  where defaultActiveFilters = fromArray $ map fst $ filter snd $ concat $ map snd filtersMaster
+projects = do
+    -- Try to get from url, before falling back to defaults
+    window_ ← liftEffect window
+    location_ ← liftEffect $ location window_
+    querystring ← liftEffect $ search location_
+
+    let activeFilters ∷ Maybe (HashSet Tag)
+        activeFilters = maybe Nothing urlDecode $ lookup urlFiltersKey queries
+
+        queries ∷ Array (Tuple String String)
+        queries = mapMaybe (maybe Nothing (\{head, tail} → Just $ Tuple head (joinWith "=" $ tail)) <<< uncons) $ map (split $ Pattern "=") $ filter (contains $ Pattern "=") $ split (Pattern "&") querystring'
+
+        querystring' ∷ String
+        querystring' = fromMaybe querystring $ stripPrefix (Pattern "?") querystring 
+
+    projects' $ fromMaybe defaultActiveFilters activeFilters
+  where
+    defaultActiveFilters = fromArray $ map fst $ filter snd $ concat $ map snd filtersMaster
 
 projects' ∷ ∀ a. HashSet Tag → Widget HTML a
 projects' activeFilters = do
@@ -54,10 +80,23 @@ projects' activeFilters = do
           )
       ]
 
+    -- Update `activeFilters`
+    let activeFilters' = if cb `isIn` activeFilters
+      then delete cb activeFilters
+      else insert cb activeFilters
+
+
+    -- Update url
+    window_ ← liftEffect window
+    document_ ← liftEffect $ document window_
+    documentTitle ← liftEffect $ title document_
+    history_ ← liftEffect $ history window_
+    liftEffect case urlEncode activeFilters' of
+      Just filtersStr → replaceState (unsafeToForeign "") (DocumentTitle documentTitle) (URL $ "?" <> urlFiltersKey <> "=" <> filtersStr) history_
+      Nothing → pure unit
+
     -- Recurse with given checkbox flipped
-    projects' $ if cb `isIn` activeFilters
-                  then delete cb activeFilters
-                  else insert cb activeFilters
+    projects' activeFilters'
   where
     filtersUI ∷ Array (Tuple String (Array Tag))
     filtersUI = map (map (map fst)) filtersMaster -- Note: `map` over `Tuple` is like `over2`
@@ -116,3 +155,6 @@ timelineItems ∷ ∀ a. Array (TimelineItem a)
 timelineItems = map
   (\p → { date : P.updated p, tags : tags p, widget : toWidget p })
   P.projects
+
+urlFiltersKey ∷ String
+urlFiltersKey = "f"

@@ -20,6 +20,7 @@ You can edit this file as you like.
     , "random"
     , "record"
     , "spec"
+    , "spec-quickcheck"
     , "unordered-collections"
     ]
 , packages =
