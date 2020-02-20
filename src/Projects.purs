@@ -2,20 +2,24 @@ module Projects (Language(..), Project, Scope(..), Type_(..), projects, publishe
 
 import Prelude
 
+import CSS (display, em, inlineBlock, marginRight)
 import CSS.Render.Concur.React (style)
 import CSS.TextAlign (textAlign, leftTextAlign)
 import Component.Paragraph (paragraph)
 import Component.Subsubhead (subsubhead, subsubheadStyle)
+import Component.Subtext (subtext, subtextStyle)
 import Concur.React.DOM (a, text)
 import Concur.React.Props (href)
 import Concur.React.Widgetable (class Widgetable)
 import Control.MultiAlternative (orr)
+import Data.Array ((:), sort)
 import Data.Date (Date, Month(February,March,April,June,July,September,October,November,December))
 import Data.Date.Unsafe (unsafeDate)
-import Data.HashSet (HashSet, empty, fromArray, singleton, union)
+import Data.HashSet (HashSet, empty, fromArray, singleton, toArray, union)
 import Data.HashSet as HS
 import Data.Hashable (class Hashable, hash)
 import Data.Maybe (Maybe(Just,Nothing))
+import Data.String (joinWith)
 import Data.Tag (class Tagged, class TagLike, Tag(Tag), toTag)
 import Generated.Files (files)
 import Web.HTML.History (URL(URL))
@@ -37,14 +41,20 @@ instance taggedProject ∷ Tagged Project where
     `union` HS.map toTag p.tags.otherLanguages
 instance widgetableProject ∷ Widgetable Project where
   toWidget (Project p ) = orr
-    [ subsubhead
-        [ style $ subsubheadStyle *> textAlign leftTextAlign ]
-        [ case p.url of
-            Just (URL url) → a [ href url ] [ text p.name ]
-            Nothing → text p.name
-        ]
-    , paragraph [] [ text (p.description <> ".") ]
-    ]
+      [ subsubhead
+          [ style $ subsubheadStyle *> textAlign leftTextAlign ]
+          [ case p.url of
+              Just (URL url) → a [ href url ] [ text p.name ]
+              Nothing → text p.name
+          ]
+      -- Note: We sort tags
+      -- because `HashSet` has nondeterministic ordering.
+      , subtext' [ text $ joinWith ", " $ sort $ map show $ p.tags.firstType : (toArray p.tags.otherTypes) ]
+      , subtext' [ text $ joinWith ", " $ sort $ map show $ p.tags.firstLanguage : (toArray p.tags.otherLanguages) ]
+      , subtext' [ text $ show p.tags.scope ]
+      , paragraph [] [ text (p.description <> ".") ]
+      ]
+    where subtext' = subtext [ style $ subtextStyle *> display inlineBlock *> marginRight (em 1.0) ]
 
 data Type_ = Website | Library | Game
 instance tagLikeType_ ∷ TagLike Type_ where toTag = Tag <<< show
