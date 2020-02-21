@@ -4,6 +4,7 @@ import Prelude
 
 import CSS (display, em, inlineBlock, marginRight)
 import CSS.Render.Concur.React (style)
+import CSS.Text.Transform (textTransform, lowercase)
 import CSS.TextAlign (textAlign, leftTextAlign)
 import Component.Paragraph (paragraph)
 import Component.Subsubhead (subsubhead, subsubheadStyle)
@@ -54,7 +55,14 @@ instance widgetableProject ∷ Widgetable Project where
       , subtext' [ text $ show p.tags.scope ]
       , paragraph [] [ text (p.description <> ".") ]
       ]
-    where subtext' = subtext [ style $ subtextStyle *> display inlineBlock *> marginRight (em 1.0) ]
+    where
+      subtext' = subtext
+        [ style do
+            subtextStyle
+            display inlineBlock
+            marginRight (em 1.0)
+            textTransform lowercase
+        ]
 
 data Type_ = Website | Library | Template | Game
 instance tagLikeType_ ∷ TagLike Type_ where toTag = Tag <<< show
@@ -71,10 +79,10 @@ instance tagLikeLanguage ∷ TagLike Language where toTag = Tag <<< show
 instance hashableLanguage ∷ Hashable Language where hash = hashShow
 derive instance eqLanguage ∷ Eq Language
 instance showLanguage ∷ Show Language where
-  show Nix = "nix"
-  show PureScript = "purescript"
-  show Python = "python"
-  show Javascript = "javascript"
+  show Nix = "Nix"
+  show PureScript = "PureScript"
+  show Python = "Python"
+  show Javascript = "JavaScript"
   show CSharp = "C#"
 
 data Scope = Major | Medium | Minor
