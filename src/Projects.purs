@@ -13,7 +13,7 @@ import Concur.React.Props (href)
 import Concur.React.Widgetable (class Widgetable)
 import Control.MultiAlternative (orr)
 import Data.Array ((:), sort)
-import Data.Date (Date, Month(February,March,April,June,July,September,October,November,December))
+import Data.Date (Date, Month(January,February,March,April,June,July,September,October,November,December))
 import Data.Date.Unsafe (unsafeDate)
 import Data.HashSet (HashSet, empty, fromArray, singleton, toArray, union)
 import Data.HashSet as HS
@@ -56,20 +56,23 @@ instance widgetableProject ∷ Widgetable Project where
       ]
     where subtext' = subtext [ style $ subtextStyle *> display inlineBlock *> marginRight (em 1.0) ]
 
-data Type_ = Website | Library | Game
+data Type_ = Website | Library | Template | Game
 instance tagLikeType_ ∷ TagLike Type_ where toTag = Tag <<< show
 instance hashableType_ ∷ Hashable Type_ where hash = hashShow
 derive instance eqType_ ∷ Eq Type_
 instance showType_ ∷ Show Type_ where
   show Website = "website"
   show Library = "library"
+  show Template = "template"
   show Game = "game"
 
-data Language = Python | Javascript | CSharp
+data Language = Nix | PureScript | Python | Javascript | CSharp
 instance tagLikeLanguage ∷ TagLike Language where toTag = Tag <<< show
 instance hashableLanguage ∷ Hashable Language where hash = hashShow
 derive instance eqLanguage ∷ Eq Language
 instance showLanguage ∷ Show Language where
+  show Nix = "nix"
+  show PureScript = "purescript"
   show Python = "python"
   show Javascript = "javascript"
   show CSharp = "C#"
@@ -165,6 +168,36 @@ projects =
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://reader.justinlovinger.com/"
+      }
+  , Project
+      { name: "timeandreturn"
+      , tags : { firstType : Library, otherTypes : empty, firstLanguage : Javascript, otherLanguages : empty, scope : Minor }
+      , published : unsafeDate 2018 October 5 -- Date of v1.0.0
+      , updated : unsafeDate 2018 October 5
+      , description : "Easily time a block of code for performance profiling"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/JustinLovinger/timeandreturn"
+      }
+  , Project
+      { name: "chai-return-bool"
+      , tags : { firstType : Library, otherTypes : empty, firstLanguage : Javascript, otherLanguages : empty, scope : Minor }
+      , published : unsafeDate 2018 October 13 -- Date of v1.0.0
+      , updated : unsafeDate 2018 October 13 -- Date of v1.0.1
+      , description : "Compose chai.js assertions with libraries expecting boolean"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/JustinLovinger/chai-return-bool"
+      }
+  , Project
+      { name : "nix-purescript-concur-frontend-starter"
+      , tags : { firstType : Template, otherTypes : empty, firstLanguage : Nix, otherLanguages : singleton PureScript, scope : Minor }
+      , published : unsafeDate 2020 January 8 -- Date of v1.0.0
+      , updated : unsafeDate 2020 January 27 -- Date of v1.0.2
+      , description : "Build a modern frontend with Nix, PureScript, and Concur"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/JustinLovinger/nix-purescript-concur-frontend-starter"
       }
   ]
 

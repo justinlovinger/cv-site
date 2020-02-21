@@ -114,10 +114,13 @@ filtersMaster =
   [ Tuple "type"
       [ Tuple (toTag P.Website) true
       , Tuple (toTag P.Library) true
+      , Tuple (toTag P.Template) true
       , Tuple (toTag P.Game) true
       ]
   , Tuple "language"
-      [ Tuple (toTag P.Python) true
+      [ Tuple (toTag P.Nix) true
+      , Tuple (toTag P.PureScript) true
+      , Tuple (toTag P.Python) true
       , Tuple (toTag P.Javascript) true
       , Tuple (toTag P.CSharp) true
       ]
