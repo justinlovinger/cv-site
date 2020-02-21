@@ -64,12 +64,13 @@ instance widgetableProject ∷ Widgetable Project where
             textTransform lowercase
         ]
 
-data Type_ = Website | Library | Template | Game
+data Type_ = Website | PWA | Library | Template | Game
 instance tagLikeType_ ∷ TagLike Type_ where toTag = Tag <<< show
 instance hashableType_ ∷ Hashable Type_ where hash = hashShow
 derive instance eqType_ ∷ Eq Type_
 instance showType_ ∷ Show Type_ where
   show Website = "website"
+  show PWA = "PWA"
   show Library = "library"
   show Template = "template"
   show Game = "game"
@@ -112,7 +113,7 @@ projects =
       , tags : { firstType : Game, otherTypes : empty, firstLanguage : Python, otherLanguages : empty, scope : Medium }
       , published : unsafeDate 2014 October 20 -- Date of last commit
       , updated : unsafeDate 2014 October 20 -- Never updated
-      , description : "Traditional roguelike game with unique victory condition"
+      , description : "Escape a labyrinth with traditional roguelike mechanics and a unique victory condition"
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL files.projects."labyrinth-rl".url
@@ -122,7 +123,7 @@ projects =
       , tags : { firstType : Game, otherTypes : empty, firstLanguage : CSharp, otherLanguages : empty, scope : Medium }
       , published : unsafeDate 2014 December 10 -- Date of last modified file
       , updated : unsafeDate 2014 December 10 -- Never updated
-      , description : "Management game with physics driven combat"
+      , description : "Manage gladiators in physics driven combat"
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL files.projects."gladiator-manager".url
@@ -132,7 +133,7 @@ projects =
       , tags : { firstType : Website, otherTypes : empty, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Major }
       , published : unsafeDate 2016 February 12 -- Date of first App Engine version
       , updated : unsafeDate 2017 March 27 -- Date of second to last commit. Last notes that change was made earlier, but not committed.
-      , description : "Website to automatically summarize text"
+      , description : "Automatically summarize text"
       , longDescription : Nothing
       , teamRole : Just "Team Lead and AI"
       , url : Just $ URL "https://gist.justinlovinger.com/"
@@ -142,7 +143,7 @@ projects =
       , tags : { firstType : Website, otherTypes : empty, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Major }
       , published : unsafeDate 2016 July 26 -- Date of v1.0.0 in Clever Surveys repo
       , updated : unsafeDate 2017 March 7 -- Date of last non-hotfix patch (v1.1.0)
-      , description : "Website with predictive machine learning trained by survey responses"
+      , description : "Make surveys with predictive machine learning trained by survey responses"
       , longDescription : Just "Website with predictive machine learning trained by survey responses. Users can answer surveys and receive predictions. Users can create surveys with built-in survey builder."
       , teamRole : Nothing
       , url : Just $ URL "https://cleversurveys.com/"
@@ -152,7 +153,7 @@ projects =
       , tags : { firstType : Library, otherTypes : empty, firstLanguage : Python, otherLanguages : empty, scope : Major }
       , published : unsafeDate 2016 November 1 -- Date of v0.1.0
       , updated : unsafeDate 2017 September 4 -- Date of v0.2.0
-      , description : "Python metaheuristic optimization library supporting Genetic Algorithms, Gravitational Search, Cross Entropy, and PBIL"
+      , description : "Perform metaheuristic optimization with Genetic Algorithms, Gravitational Search, Cross Entropy, and PBIL"
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/JustinLovinger/optimal"
@@ -162,17 +163,17 @@ projects =
       , tags : { firstType : Library, otherTypes : empty, firstLanguage : Python, otherLanguages : empty, scope : Major }
       , published : unsafeDate 2017 September 14 -- Date readme was added. Approximate date of public GitHub.
       , updated : unsafeDate 2018 April 20 -- Date of last commit, before recent minor commits
-      , description : "Python machine learning library using powerful numerical optimization methods"
+      , description : "Perform machine learning with several models and powerful numerical optimization methods"
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/JustinLovinger/learning"
       }
   , Project
       { name : "Reader"
-      , tags : { firstType : Website, otherTypes : empty, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Medium }
+      , tags : { firstType : Website, otherTypes : singleton PWA, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Medium }
       , published : unsafeDate 2018 June 5 -- Date of first App Engine version
       , updated : unsafeDate 2018 June 9 -- Date of last tagged version (v0.2.0)
-      , description : "Progressive web app for reading pdf ebooks"
+      , description : "Read pdf ebooks online or offline with cloud sync"
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://reader.justinlovinger.com/"
@@ -182,7 +183,7 @@ projects =
       , tags : { firstType : Library, otherTypes : empty, firstLanguage : Javascript, otherLanguages : empty, scope : Minor }
       , published : unsafeDate 2018 October 5 -- Date of v1.0.0
       , updated : unsafeDate 2018 October 5
-      , description : "Easily time a block of code for performance profiling"
+      , description : "Easily time blocks of code for performance profiling"
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/JustinLovinger/timeandreturn"

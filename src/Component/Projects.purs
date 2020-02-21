@@ -113,6 +113,7 @@ filtersMaster ∷ Array (Tuple String (Array (Tuple Tag Boolean)))
 filtersMaster =
   [ Tuple "type"
       [ Tuple (toTag P.Website) true
+      , Tuple (toTag P.PWA) true
       , Tuple (toTag P.Library) true
       , Tuple (toTag P.Template) true
       , Tuple (toTag P.Game) true
