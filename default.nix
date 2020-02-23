@@ -115,8 +115,8 @@ in pkgs.stdenv.mkDerivation {
     eval "$configurePhase"
   '';
   meta = with pkgs.stdenv.lib; {
-    description = "The personal portfolio website for Justin Lovinger";
-    # homepage = ;
+    description = "The personal portfolio, resume, CV, website for Justin Lovinger";
+    homepage = https://github.com/JustinLovinger/cv-site;
     license = licences.mit;
     maintainers = [ ];
   };

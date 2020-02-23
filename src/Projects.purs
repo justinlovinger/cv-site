@@ -208,6 +208,16 @@ projects =
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/JustinLovinger/nix-purescript-concur-frontend-starter"
       }
+  , Project
+      { name : "My CV Site"
+      , tags : { firstType : Website, otherTypes : empty, firstLanguage : PureScript, otherLanguages : singleton Nix, scope : Medium }
+      , published : unsafeDate 2020 February 23 -- Today. TODO: Update when published
+      , updated : unsafeDate 2020 February 23 -- Today. TODO: Update when published
+      , description : "View the source code for this website"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/JustinLovinger/cv-site"
+      }
   ]
 
 published ∷ Project → Date
