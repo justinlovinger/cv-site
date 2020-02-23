@@ -39,6 +39,15 @@ hero = styledEl div heroStyle
 
 introduction ∷ ∀ a. Widget HTML a
 introduction = do
+    -- Default to disabled canvas
+    -- because the browser will trigger `onMouseEnter`
+    -- if the page loads
+    -- with the mouse in the element,
+    -- but it will not trigger
+    -- `onMouseLeave`
+    -- if the page loads
+    -- with the mouse outside the element.
+    _ ← intro [ onMouseEnter ] []
     _ ← intro
       [ onMouseLeave ]
       [ div
@@ -58,7 +67,6 @@ introduction = do
           ]
           [ fullScreenDynamicCircles ]
       ]
-    _ ← intro [ onMouseEnter ] []
     introduction
   where
     intro props children = hero
