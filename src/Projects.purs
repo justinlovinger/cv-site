@@ -64,11 +64,12 @@ instance widgetableProject ∷ Widgetable Project where
             textTransform lowercase
         ]
 
-data Type_ = Website | PWA | Library | Template | Game
+data Type_ = MachineLearning | Website | PWA | Library | Template | Game
 instance tagLikeType_ ∷ TagLike Type_ where toTag = Tag <<< show
 instance hashableType_ ∷ Hashable Type_ where hash = hashShow
 derive instance eqType_ ∷ Eq Type_
 instance showType_ ∷ Show Type_ where
+  show MachineLearning = "machine learning"
   show Website = "website"
   show PWA = "PWA"
   show Library = "library"
@@ -130,7 +131,7 @@ projects =
       }
   , Project
       { name : "Gist"
-      , tags : { firstType : Website, otherTypes : empty, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Major }
+      , tags : { firstType : Website, otherTypes : singleton MachineLearning, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Major }
       , published : unsafeDate 2016 February 12 -- Date of first App Engine version
       , updated : unsafeDate 2017 March 27 -- Date of second to last commit. Last notes that change was made earlier, but not committed.
       , description : "Automatically summarize text"
@@ -140,7 +141,7 @@ projects =
       }
   , Project
       { name : "Clever Surveys"
-      , tags : { firstType : Website, otherTypes : empty, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Major }
+      , tags : { firstType : Website, otherTypes : singleton MachineLearning, firstLanguage : Python, otherLanguages : singleton Javascript, scope : Major }
       , published : unsafeDate 2016 July 26 -- Date of v1.0.0 in Clever Surveys repo
       , updated : unsafeDate 2017 March 7 -- Date of last non-hotfix patch (v1.1.0)
       , description : "Make surveys with predictive machine learning trained by survey responses"
@@ -150,7 +151,7 @@ projects =
       }
   , Project
       { name : "Optimal"
-      , tags : { firstType : Library, otherTypes : empty, firstLanguage : Python, otherLanguages : empty, scope : Major }
+      , tags : { firstType : Library, otherTypes : singleton MachineLearning, firstLanguage : Python, otherLanguages : empty, scope : Major }
       , published : unsafeDate 2016 November 1 -- Date of v0.1.0
       , updated : unsafeDate 2017 September 4 -- Date of v0.2.0
       , description : "Perform metaheuristic optimization with Genetic Algorithms, Gravitational Search, Cross Entropy, and PBIL"
@@ -160,7 +161,7 @@ projects =
       }
   , Project
       { name : "Learning"
-      , tags : { firstType : Library, otherTypes : empty, firstLanguage : Python, otherLanguages : empty, scope : Major }
+      , tags : { firstType : Library, otherTypes : singleton MachineLearning, firstLanguage : Python, otherLanguages : empty, scope : Major }
       , published : unsafeDate 2017 September 14 -- Date readme was added. Approximate date of public GitHub.
       , updated : unsafeDate 2018 April 20 -- Date of last commit, before recent minor commits
       , description : "Perform machine learning with several models and powerful numerical optimization methods"
