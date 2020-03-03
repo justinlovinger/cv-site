@@ -40,22 +40,22 @@ let
         sha512 = "8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==";
       };
     };
-    "react-is-16.12.0" = {
+    "react-is-16.13.0" = {
       name = "react-is";
       packageName = "react-is";
-      version = "16.12.0";
+      version = "16.13.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/react-is/-/react-is-16.12.0.tgz";
-        sha512 = "rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==";
+        url = "https://registry.npmjs.org/react-is/-/react-is-16.13.0.tgz";
+        sha512 = "GFMtL0vHkiBv9HluwNZTggSn/sCyEt9n02aM0dSAjGGyqyNlAyftYm4phPxdvCigG15JreC5biwxCgTAJZ7yAA==";
       };
     };
-    "scheduler-0.18.0" = {
+    "scheduler-0.19.0" = {
       name = "scheduler";
       packageName = "scheduler";
-      version = "0.18.0";
+      version = "0.19.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/scheduler/-/scheduler-0.18.0.tgz";
-        sha512 = "agTSHR1Nbfi6ulI0kYNK0203joW2Y5W4po4l+v03tOoiJKpTBbxpNhWDvqc/4IcOw+KLmSiQLTasZ4cab2/UWQ==";
+        url = "https://registry.npmjs.org/scheduler/-/scheduler-0.19.0.tgz";
+        sha512 = "xowbVaTPe9r7y7RUejcK73/j8tt2jfiyTednOvHbA8JoClvMYCp+r8QegLwK/n8zWQAtZb1fFnER4XLBZXrCxA==";
       };
     };
   };
@@ -64,17 +64,17 @@ in
   react = nodeEnv.buildNodePackage {
     name = "react";
     packageName = "react";
-    version = "16.12.0";
+    version = "16.13.0";
     src = fetchurl {
-      url = "https://registry.npmjs.org/react/-/react-16.12.0.tgz";
-      sha512 = "fglqy3k5E+81pA8s+7K0/T3DBCF0ZDOher1elBFzF7O6arXJgzyu/FW+COxFvAWXJoJN9KIZbT2LXlukwphYTA==";
+      url = "https://registry.npmjs.org/react/-/react-16.13.0.tgz";
+      sha512 = "TSavZz2iSLkq5/oiE7gnFzmURKZMltmi193rm5HEoUDAXpzT9Kzw6oNZnGoai/4+fUnm7FqS5dwgUL34TujcWQ==";
     };
     dependencies = [
       sources."js-tokens-4.0.0"
       sources."loose-envify-1.4.0"
       sources."object-assign-4.1.1"
       sources."prop-types-15.7.2"
-      sources."react-is-16.12.0"
+      sources."react-is-16.13.0"
     ];
     buildInputs = globalBuildInputs;
     meta = {
@@ -89,23 +89,41 @@ in
   react-dom = nodeEnv.buildNodePackage {
     name = "react-dom";
     packageName = "react-dom";
-    version = "16.12.0";
+    version = "16.13.0";
     src = fetchurl {
-      url = "https://registry.npmjs.org/react-dom/-/react-dom-16.12.0.tgz";
-      sha512 = "LMxFfAGrcS3kETtQaCkTKjMiifahaMySFDn71fZUNpPHZQEzmk/GiAeIT8JSOrHB23fnuCOMruL2a8NYlw+8Gw==";
+      url = "https://registry.npmjs.org/react-dom/-/react-dom-16.13.0.tgz";
+      sha512 = "y09d2c4cG220DzdlFkPTnVvGTszVvNpC73v+AaLGLHbkpy3SSgvYq8x0rNwPJ/Rk/CicTNgk0hbHNw1gMEZAXg==";
     };
     dependencies = [
       sources."js-tokens-4.0.0"
       sources."loose-envify-1.4.0"
       sources."object-assign-4.1.1"
       sources."prop-types-15.7.2"
-      sources."react-is-16.12.0"
-      sources."scheduler-0.18.0"
+      sources."react-is-16.13.0"
+      sources."scheduler-0.19.0"
     ];
     buildInputs = globalBuildInputs;
     meta = {
       description = "React package for working with the DOM.";
       homepage = https://reactjs.org/;
+      license = "MIT";
+    };
+    production = true;
+    bypassCache = true;
+    reconstructLock = true;
+  };
+  "normalize.css" = nodeEnv.buildNodePackage {
+    name = "normalize.css";
+    packageName = "normalize.css";
+    version = "8.0.1";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/normalize.css/-/normalize.css-8.0.1.tgz";
+      sha512 = "qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==";
+    };
+    buildInputs = globalBuildInputs;
+    meta = {
+      description = "A modern alternative to CSS resets";
+      homepage = https://necolas.github.io/normalize.css;
       license = "MIT";
     };
     production = true;

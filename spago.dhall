@@ -7,7 +7,8 @@ You can edit this file as you like.
 , name =
     "nix-purescript-concur-frontend-starter"
 , dependencies =
-    [ "behaviors"
+    [ "b64"
+    , "behaviors"
     , "canvas"
     , "concur-react"
     , "console"

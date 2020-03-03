@@ -6,19 +6,20 @@ import CSS.ListStyle.Type (listStyleType)
 import CSS.Render.Concur.React (style)
 import CSS.Text.Transform (capitalize, textTransform)
 import CSS.TextAlign (center, leftTextAlign, textAlign)
+import Component.Checkbox (checkbox')
 import Component.Subhead (subhead, subheadStyle)
 import Component.Subsubsubhead (subsubsubhead)
 import Component.Timeline (timeline)
 import Concur.Core (Widget)
 import Concur.React (HTML)
-import Concur.React.DOM (div, input, label', li', text, ul)
-import Concur.React.Props (_type, checked, onChange)
+import Concur.React.DOM (div, label', li', span', text, ul)
+import Concur.React.Props (onChange)
 import Concur.React.Widgetable (toWidget)
 import Data.Array (concat, filter, foldl, mapMaybe, uncons, zip)
 import Data.Date (Date)
 import Data.HashSet (HashSet, delete, fromArray, insert, intersection)
 import Data.HeytingAlgebra (conj)
-import Data.Maybe (Maybe(Just,Nothing), fromMaybe, maybe)
+import Data.Maybe (Maybe(Just, Nothing), fromMaybe, maybe)
 import Data.String (Pattern(Pattern), contains, joinWith, split, stripPrefix)
 import Data.Tag (Tag, has, hasIn, isIn, tags, toTag)
 import Data.Tag.Encode (urlDecode, urlEncode)
@@ -152,8 +153,8 @@ filterBlock category filters = div
 
 filterWidget ∷ Tag → Boolean → Widget HTML Tag
 filterWidget tag isChecked = label'
-  [ input [ tag <$ onChange, _type "checkbox", checked isChecked ]
-  , text $ " " <> (show tag)
+  [ checkbox' false isChecked [ tag <$ onChange ]
+  , span' [ text $ " " <> (show tag) ]
   ]
 
 timelineItems ∷ ∀ a. Array (TimelineItem a)

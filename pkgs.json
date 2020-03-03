@@ -1,4 +1,4 @@
-[
-  "react"
+[ "react"
 , "react-dom"
+, "normalize.css"
 ]

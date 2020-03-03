@@ -65,6 +65,18 @@ let
         installPhase = "ln -s $src $out";
       };
 
+    "b64" = pkgs.stdenv.mkDerivation {
+        name = "b64";
+        version = "v0.0.6";
+        src = pkgs.fetchgit {
+          url = "https://github.com/menelaos/purescript-b64.git";
+          rev = "694b9675cce744864c49a16c7c1c53b12fefa83f";
+          sha256 = "1rbp94k2010yxs9b5yglh101imlzrmxymm87zrxn2lw36bjxd62z";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
     "behaviors" = pkgs.stdenv.mkDerivation {
         name = "behaviors";
         version = "v8.0.0";
@@ -264,6 +276,18 @@ let
           url = "https://github.com/purescript/purescript-either.git";
           rev = "8b4b38a729f8e88750b03e5c7baf2b3863ce4742";
           sha256 = "12j7vvjly0bgxidxmb2pflx0zy7x425dnvxk2y1pm66n0hbsq7ns";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "encoding" = pkgs.stdenv.mkDerivation {
+        name = "encoding";
+        version = "v0.0.6";
+        src = pkgs.fetchgit {
+          url = "https://github.com/menelaos/purescript-encoding.git";
+          rev = "e45941150c75f26ab53cb5e34207cc347b375942";
+          sha256 = "1ccmlnk9k1ba8h7izbp7lkm2kxk6rpq4r0zb2h1436qspwkg51w0";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";

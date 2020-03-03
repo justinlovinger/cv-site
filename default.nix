@@ -38,6 +38,7 @@ let
       mkdir -p $out/lib/node_modules/
       ${linkNodePackage localNodePkgs.react}
       ${linkNodePackage localNodePkgs.react-dom}
+      ${linkNodePackage localNodePkgs."normalize.css"}
     '';
     phases = [ "installPhase" ];
   };
