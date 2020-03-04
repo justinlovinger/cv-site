@@ -4,63 +4,68 @@ import CSS (absolute, alignItems, background, bold, border, display, em, flex, f
 import CSS.Common (center)
 import CSS.Render.Concur.React (style)
 import CSS.TextAlign as TA
+import Color (Color)
 import Color.Scheme.Website as C
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div, text)
-import Data.Array (last, reverse, sortWith, tail, zip)
+import Data.Array (last, sortBy, tail, zip)
 import Data.Date (Date, diff)
 import Data.DateTime (DateTime(DateTime))
 import Data.Enum (toEnum)
-import Data.Formatter.DateTime (FormatterCommand(DayOfMonthTwoDigits,MonthTwoDigits,Placeholder,YearFull), format)
+import Data.Formatter.DateTime (FormatterCommand(DayOfMonthTwoDigits, MonthTwoDigits, Placeholder, YearFull), format)
 import Data.List ((:), List(Nil))
-import Data.Maybe (Maybe(Just,Nothing), fromJust, fromMaybe)
+import Data.Maybe (Maybe(Just, Nothing), fromJust, fromMaybe)
 import Data.Time (Time(Time))
 import Data.Time.Duration (Days(Days))
-import Data.Tuple (Tuple(Tuple), fst)
-import Partial.Unsafe (unsafePartial)
-import Prelude ((<>), ($), (/), (*), discard, map, negate)
+import Data.Tuple (Tuple(Tuple))
 import Math (abs)
+import Partial.Unsafe (unsafePartial)
+import Prelude (compare, discard, map, negate, ($), (*), (/), (<>))
 
-timeline ∷ ∀ a. Array (Tuple Date (Widget HTML a)) → Widget HTML a
-timeline datedWidgets = div
+type TimelineItem a = { borderColor ∷ Maybe Color, date ∷ Date, widget ∷ Widget HTML a }
+
+timeline ∷ ∀ a. Array (TimelineItem a) → Widget HTML a
+timeline items = div
     [ style $ position relative]
     ([ line ] <>
       (mapPairs
-        (\(Tuple (Tuple date widget) (Tuple sndDate _)) →
-          timelineItem (marginFromDays $ diff date sndDate) date widget)
-        sortedDatedWidgets
-      ) <> case last sortedDatedWidgets of
-          Just (Tuple date widget) → [ timelineItem (px 0.0) date widget ]
+        (\(Tuple { borderColor, date, widget } { borderColor : _, date : sndDate, widget : _ }) →
+          timelineWidget (marginFromDays $ diff date sndDate) (fromMaybeColor borderColor) date widget)
+        sortedItems
+      ) <> case last sortedItems of
+          Just { borderColor, date, widget } → [ timelineWidget (px 0.0) (fromMaybeColor borderColor) date widget ]
           Nothing → []
     )
   where
     mapPairs f xs = map f (zip xs (fromMaybe [] $ tail xs))
-    sortedDatedWidgets = reverse $ sortWith fst datedWidgets
+    sortedItems = sortBy (\a b → compare b.date a.date) items -- Descending by date
 
     marginFromDays d = px $ 0.25 * (abs $ fromDays $ d)
     fromDays (Days x) = x
 
-    timelineItem space date widget = div
+    fromMaybeColor = fromMaybe lineColor
+
+    timelineWidget space borderColor date widget = div
       [ style $ do
           display flex
           alignItems center
           marginBottom space
       ]
-      [ dateWidget date
-      , connector
+      [ dateWidget borderColor date
+      , connector borderColor
       , div
           [ style $ do
-              border solid lineWidth lineColor
+              border solid lineWidth borderColor
               padding (em 1.0) (em 1.0) (em 1.0) (em 1.0)
               flexGrow 1
           ]
           [ widget ]
       ]
 
-    dateWidget date = div
+    dateWidget borderColor date = div
       [ style $ do
-          border solid lineWidth lineColor
+          border solid lineWidth borderColor
           paddingTop (em 1.0)
           paddingBottom (em 1.0)
           width (dateWidthUnit dateWidthNum)
@@ -75,9 +80,9 @@ timeline datedWidgets = div
     dateFormat = format $ YearFull : Placeholder "-" : MonthTwoDigits : Placeholder "-" : DayOfMonthTwoDigits : Nil
     zeroTime = Time (unsafePartial fromJust $ toEnum 0) (unsafePartial fromJust $ toEnum 0) (unsafePartial fromJust $ toEnum 0) (unsafePartial fromJust $ toEnum 0)
 
-    connector = div
+    connector color = div
       [ style $ do
-          background lineColor
+          background color
           width (vw 4.0)
           flexShrink 0
           height lineWidth

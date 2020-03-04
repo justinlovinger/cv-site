@@ -7,8 +7,7 @@ import Color.Scheme.Website as C
 import Component.Contact (contact, contactStylesheet)
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Introduction (introduction)
-import Component.Papers (papers)
-import Component.Projects (projects)
+import Component.Lifeline (lifeline)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div')
@@ -38,7 +37,6 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
 app ∷ ∀ a. Widget HTML a
 app = div'
   [ introduction
-  , projects
-  , papers
+  , lifeline
   , contact
   ]
