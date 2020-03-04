@@ -9,7 +9,7 @@ module Component.Checkbox
 
 import Prelude
 
-import CSS (BackgroundImage, CSS, absolute, backgroundColor, backgroundImage, border, borderBox, borderColor, boxSizing, display, ex, fromString, height, inlineBlock, key, position, px, solid, url, width)
+import CSS (BackgroundImage, CSS, absolute, backgroundColor, backgroundImage, border, borderBox, borderColor, boxSizing, display, em, ex, fromString, height, inlineBlock, key, position, px, solid, url, width)
 import CSS.Overflow (hidden, overflow)
 import CSS.Render.Concur.React (style)
 import CSS.VerticalAlign (textBottom, verticalAlign)
@@ -54,7 +54,7 @@ checkboxStyle = do
   display inlineBlock
   width (ex 2.0)
   height (ex 2.0)
-  border solid (px 2.0) foreground
+  border solid (em 0.125) foreground
   verticalAlign textBottom
   key (fromString "cursor") "pointer"
 
