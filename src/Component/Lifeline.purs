@@ -7,17 +7,17 @@ import CSS.Render.Concur.React (style)
 import CSS.Text.Transform (capitalize, lowercase, textTransform)
 import CSS.TextAlign (center, leftTextAlign, textAlign)
 import Color (Color)
-import Color.Scheme.Website (brightBlue, brightGreen)
+import Color.Scheme.Website (brightBlue, brightGreen, brightYellow)
 import Component.Checkbox (checkbox')
 import Component.Paragraph (paragraph)
 import Component.Subhead (subhead, subheadStyle)
 import Component.Subsubhead (subsubhead, subsubheadStyle)
-import Component.Subsubsubhead (subsubsubhead)
+import Component.Subsubsubhead (subsubsubhead, subsubsubheadStyle)
 import Component.Subtext (subtext, subtextStyle)
 import Component.Timeline (timeline)
 import Concur.Core (Widget)
 import Concur.React (HTML)
-import Concur.React.DOM (a, div, div', label', li, span, text, ul)
+import Concur.React.DOM (a, div, div', label', li, li', span, text, ul)
 import Concur.React.Props (href, onChange)
 import Control.MultiAlternative (orr)
 import Data.Array (concat, filter, foldl, mapMaybe, sort, sortBy, uncons, zip)
@@ -31,6 +31,7 @@ import Data.Tag (Tag, has, hasIn, isIn, tag, tags, toTag)
 import Data.Tag.Encode (urlDecode, urlEncode)
 import Data.Tuple (Tuple(Tuple), fst, lookup, snd)
 import Data.Tuple.Nested (over1)
+import Education as E
 import Effect.Class (liftEffect)
 import Foreign (unsafeToForeign)
 import Papers as Pa
@@ -148,7 +149,13 @@ urlFiltersKey = "f"
 -- | and more.
 filtersMaster ∷ Array (Tuple (Tuple Tag Color) (Array (Tuple String (Array (Tuple Tag Boolean)))))
 filtersMaster =
-  [ Tuple (Tuple paperTag paperColor)
+  [ Tuple (Tuple educationTag educationColor)
+      [ Tuple "degree"
+          [ Tuple (toTag E.Masters) true
+          , Tuple (toTag E.Bachelors) false
+          ]
+      ]
+  , Tuple (Tuple paperTag paperColor)
       [ Tuple "type"
           [ Tuple (toTag Pa.Thesis) true
           , Tuple (toTag Pa.Journal) true
@@ -254,6 +261,15 @@ checkboxLabelSpace = "0.5ch"
 timelineItems ∷ ∀ a. Array (TimelineItem a)
 timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descending date
     (map
+      (\e → { borderColor : educationColor
+            , date : E.graduated e
+            , tags : insert educationTag (tags e)
+            , widget : educationToWidget e
+            }
+      )
+      E.education
+    )
+    <> (map
       (\p → { borderColor : paperColor
             , date : Pa.published p
             , tags : insert paperTag (tags p)
@@ -272,6 +288,38 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
       Pr.projects
     )
   where
+    educationToWidget e = orr $
+      [ subsubhead
+          [ style $ subsubheadStyle *> textAlign leftTextAlign ]
+          [ text $ E.schoolName e ]
+      , subsubsubhead
+          [ style $ subsubsubheadStyle *> textAlign leftTextAlign ]
+          [ span [ style $ textTransform capitalize ] [ text $ (show $ E.degreeType e) ]
+          , text " in "
+          , span
+              -- Inline block to de-prioritize splitting text
+              [ style $ display inlineBlock *> textTransform capitalize ]
+              [ text $ E.degreeProgram e ]
+          ]
+      , subsubsubhead
+          [ style $ subsubsubheadStyle *> textAlign leftTextAlign ]
+          [ text $ (\a → a.district <> ", " <> a.state <> ", " <> a.country) (E.schoolAddress e) ]
+      , subtext' [ text $ show educationTag ]
+      , subtext' [ text $ show (E.degreeType e) ]
+      , subtext' [ text $ "gpa: " <> (show $ E.gpa e) ]
+      ] <> case (E.accolades e) of
+        Just acs →
+          [ paragraph
+              []
+              [ ul
+                  [ style do
+                      margin (px 0.0) (px 0.0) (px 0.0) (px 0.0)
+                      paddingLeft (px 20.0)
+                  ]
+                  (map (\ac → li' [ text ac ]) acs)
+              ]
+          ]
+        Nothing → []
     paperToWidget p = orr
       [ subsubhead
           [ style $ subsubheadStyle *> textAlign leftTextAlign ]
@@ -309,6 +357,12 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
           marginRight (em 1.0)
           textTransform lowercase
       ]
+
+educationTag ∷ Tag
+educationTag = tag "education"
+
+educationColor ∷ Color
+educationColor = brightYellow
 
 paperTag ∷ Tag
 paperTag = tag "paper"
