@@ -79,11 +79,22 @@ in pkgs.stdenv.mkDerivation {
     ${spagoBuildFromNixStore} "src/Main.purs" "src/**/*.purs"
   '';
   buildPhase = ''
+    # Create build directory
     export BUILDDIR=$(mktemp -d -p .)
+
+    # Link css to build directory
+    mkdir -p $BUILDDIR/node_modules
+    ln -s ${localNodePkgs."normalize.css"}/lib/node_modules/* $BUILDDIR/node_modules/
+    # Parcel requires cssnano to bundle css
+    ln -s ${localNodePkgs.cssnano}/lib/node_modules/* $BUILDDIR/node_modules/
+
+    # Build
     purs bundle "output/*/*.js" -m Main --main Main --output $BUILDDIR/index.raw.js
     closure-compiler --js $BUILDDIR/index.raw.js --js_output_file $BUILDDIR/index.js
     cp index.html $BUILDDIR/index.html
     parcel build $BUILDDIR/index.html --no-source-maps
+
+    # Cleanup build directory
     rm -r $BUILDDIR
   '';
   doCheck = true;

@@ -1,4 +1,5 @@
-[ "react"
+[ "cssnano"
+, "react"
 , "react-dom"
 , "normalize.css"
 ]
