@@ -23,8 +23,10 @@ and rebuild the spago packages derivation with
 
 Enter a Nix shell with `nix-shell`.
 Packages are installed when entering the Nix shell.
-New packages can be installed without exiting Nix shell
-with `eval "$configurePhase"`.
+New packages can be installed
+by exiting
+and re-entering
+the Nix shell.
 
 ### Build code
 
@@ -41,14 +43,14 @@ with `eval "$configurePhase"`.
 #### Hot code reload with PureScript code
 
 The parcel dev server
-will watch for Javascript changes,
+will watch for JavaScript changes,
 and automatically reload the web page
 with your changes.
 Your IDE should watch for PureScript changes
-and automatically compile to Javascript.
+and automatically compile to JavaScript.
 Together,
-the webpage should automatically reload
-with your PureScript changes.
+the web page should automatically reload
+when your PureScript changes.
 
 ## Production build
 
@@ -65,8 +67,7 @@ for typed CSS in PureScript.
 A simple module to render this CSS
 for Concur elements
 is included
-in src/CSS/Render/Concur/React.purs
-.
+in `CSS.Render.Concur.React`.
 Concur elements can use inline CSS like
 
 ```purs
@@ -95,7 +96,7 @@ myComponent = styledEl h1 myStyle
 
 Inline CSS is fast and easy
 but does not allow pseudo-selectors
-like :active.
+like `:active`.
 The CSS library can also make stylesheets like
 
 ```purs
