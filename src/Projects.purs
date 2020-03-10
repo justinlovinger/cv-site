@@ -251,8 +251,8 @@ projects =
                , firstLanguage : PureScript, otherLanguages : singleton Nix
                , scope : Medium
                }
-      , published : unsafeDate 2020 February 23 -- Today. TODO: Update when published
-      , updated : unsafeDate 2020 February 23 -- Today. TODO: Update when published
+      , published : unsafeDate 2020 March 10
+      , updated : unsafeDate 2020 March 10
       , description : "View the source code for this website"
       , longDescription : Nothing
       , teamRole : Nothing
