@@ -23,6 +23,7 @@ You can edit this file as you like.
     , "spec"
     , "spec-quickcheck"
     , "unordered-collections"
+    , "web-touchevents"
     ]
 , packages =
     ./packages.dhall

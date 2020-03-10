@@ -1053,7 +1053,7 @@ let
         name = "unsafe-reference";
         version = "v3.0.1";
         src = pkgs.fetchgit {
-          url = "https://github.com/purescript-contrib/purescript-unsafe-reference";
+          url = "https://github.com/purescript-contrib/purescript-unsafe-reference.git";
           rev = "79d7de7b9351346a73e6c060d80532c95ba1c7c1";
           sha256 = "0q758dz59qz0li4s3w1qcg921xp5i5rh6i1l611iv7rr8cbj11al";
         };
@@ -1116,6 +1116,18 @@ let
           url = "https://github.com/purescript-web/purescript-web-storage.git";
           rev = "c2dedea1ee10ca7e94af5547c90274fb63ab3bc6";
           sha256 = "1ycb2s29aw9w6lqik6hfmp9nf9i2yhn0q26hc4p3450jam5mj8bx";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "web-touchevents" = pkgs.stdenv.mkDerivation {
+        name = "web-touchevents";
+        version = "v2.0.0";
+        src = pkgs.fetchgit {
+          url = "https://github.com/purescript-web/purescript-web-touchevents.git";
+          rev = "cde8ea42d92035b1c46df4f1e1c38205aba7742a";
+          sha256 = "0mhsfqlglx04q3vkjg4k33bkxcpx2cmbq4x1zxyhl48q1qqmnic8";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";

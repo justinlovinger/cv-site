@@ -1,6 +1,6 @@
 module Component.Lifeline (lifeline) where
 
-import CSS (color, display, em, flex, flexBasis, flexGrow, flexWrap, fromString, inlineBlock, margin, marginBottom, marginLeft, marginRight, maxWidth, padding, paddingLeft, px, textWhitespace, whitespaceNoWrap, wrap)
+import CSS (color, display, em, flex, flexBasis, flexGrow, flexWrap, fromString, inlineBlock, margin, marginBottom, marginLeft, marginRight, marginTop, maxWidth, padding, paddingLeft, paddingRight, px, textWhitespace, whitespaceNoWrap, wrap)
 import CSS.Common (auto, none)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.Render.Concur.React (style)
@@ -35,7 +35,7 @@ import Education as E
 import Effect.Class (liftEffect)
 import Foreign (unsafeToForeign)
 import Papers as Pa
-import Prelude (bind, compare, discard, map, pure, show, unit, ($), (*>), (-), (<$), (<<<), (<>))
+import Prelude (bind, compare, discard, map, pure, show, unit, ($), (*>), (-), (<$), (<<<), (<>), (/))
 import Projects as Pr
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (title)
@@ -76,14 +76,21 @@ lifeline' ∷ ∀ a. HashSet Tag → Widget HTML a
 lifeline' activeFilters = do
     cb ← div'
       [ subhead
-          [ style $ subheadStyle *> marginBottom (em 1.0) ]
+          [ style do
+              subheadStyle
+              marginBottom (em 1.0)
+              paddingLeft (px 4.0)
+              paddingRight (px 4.0)
+          ]
           [ text "Wondering what I've done?" ]
       , div
           [ style do
-              maxWidth (px 1200.0)
-              margin auto auto auto auto
               display flex
               flexWrap wrap
+              maxWidth (px 1200.0)
+              margin auto auto auto auto
+              paddingLeft $ em (filterSuperblockMarginEm / 2.0)
+              paddingRight $ em (filterSuperblockMarginEm / 2.0)
           ]
           (map
             (\(Tuple (Tuple t c) cs) → filterSuperblock
@@ -96,7 +103,12 @@ lifeline' activeFilters = do
             filtersUI
           )
       , div
-          [ style $ maxWidth (px 850.0) *> margin auto auto auto auto ]
+          [ style do
+              maxWidth (px 850.0)
+              margin auto auto auto auto
+              paddingLeft $ px 4.0
+              paddingRight $ px 4.0
+          ]
           [ timeline $ map
               (\i → { borderColor : Just i.borderColor, date : i.date, widget : i.widget })
               (filter
@@ -203,31 +215,37 @@ filterSuperblock t c isChecked filters = div
   [ style do
       flexGrow 1
       flexBasis (px 0.0)
+      marginLeft $ em (filterSuperblockMarginEm / 2.0)
+      marginRight $ em (filterSuperblockMarginEm / 2.0)
       textTransform capitalize
   ]
   [ subsubhead
       [ style do
           subsubheadStyle
+          color c
           marginBottom (em 0.5)
           marginLeft (fromString $ "calc(-2ex - " <> checkboxLabelSpace <> ")")
-          color c ]
+          textWhitespace whitespaceNoWrap -- Keep checkbox and label on one line
+      ]
       [ filterWidget t true isChecked ]
   , div
       [ style do
           display flex
           flexWrap wrap
-          padding (px 0.0) (px 5.0) (px 0.0) (px 5.0)
+          padding (px 0.0) (px $ filterBlockMarginPx / 2.0) (px 0.0) (px $ filterBlockMarginPx / 2.0)
       ]
       (map (\(Tuple ct fs) → filterBlock ct fs isChecked) filters)
   ]
 
+filterSuperblockMarginEm ∷ Number
+filterSuperblockMarginEm = 2.0
 
 filterBlock ∷ String → Array (Tuple Tag Boolean) → Boolean → Widget HTML Tag
 filterBlock category filters isEnabled = div
     [ style do
         flexGrow 1
         flexBasis (px 0.0)
-        margin (px 0.0) (px 5.0) (px 0.0) (px 5.0)
+        margin (px 0.0) (px $ filterBlockMarginPx / 2.0) (px 0.0) (px $ filterBlockMarginPx / 2.0)
         textAlign center
         textTransform capitalize
     ]
@@ -247,7 +265,10 @@ filterBlock category filters isEnabled = div
         )
     ]
   where
-    liMarginEm = 0.125
+    liMarginEm = 0.25
+
+filterBlockMarginPx ∷ Number
+filterBlockMarginPx = 10.0
 
 filterWidget ∷ Tag → Boolean → Boolean → Widget HTML Tag
 filterWidget tag isEnabled isChecked = label'
@@ -327,7 +348,16 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
       , subtext' [ text $ show paperTag ]
       , subtext'
           [ case Pa.url p of
-              Just (URL url) → a [ href url ] [ text $ show $ Pa.type_ p ]
+              Just (URL url) → a
+                [ href url, style do
+                    -- Add some space
+                    -- between this link
+                    -- and the one above,
+                    -- for easier tapping.
+                    display inlineBlock
+                    marginTop (em 0.75)
+                ]
+                [ text $ show $ Pa.type_ p ]
               Nothing → text $ show $ Pa.type_ p
           ]
       , tagsWidget $ Pa.topics p
