@@ -1,5 +1,5 @@
 {
-  papers = {
+  publications = {
     gist = {
       file = ~/data/_-_file/by-name/gist.pdf;
       url = "/file/gist.pdf";

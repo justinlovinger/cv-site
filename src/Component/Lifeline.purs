@@ -1,6 +1,6 @@
 module Component.Lifeline (lifeline) where
 
-import CSS (color, display, em, flex, flexBasis, flexGrow, flexWrap, fromString, inlineBlock, margin, marginBottom, marginLeft, marginRight, marginTop, maxWidth, padding, paddingLeft, paddingRight, px, textWhitespace, whitespaceNoWrap, wrap)
+import CSS (Abs, Size, color, display, em, flex, flexBasis, flexGrow, flexWrap, fromString, inlineBlock, margin, marginBottom, marginLeft, marginTop, maxWidth, padding, paddingLeft, paddingRight, px, textWhitespace, whitespaceNoWrap, wrap)
 import CSS.Common (auto, none)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.Render.Concur.React (style)
@@ -17,14 +17,14 @@ import Component.Subtext (subtext, subtextStyle)
 import Component.Timeline (timeline)
 import Concur.Core (Widget)
 import Concur.React (HTML)
-import Concur.React.DOM (a, div, div', label', li, li', span, text, ul)
+import Concur.React.DOM (a, div, div', label', li, li', span, span', text, ul)
 import Concur.React.Props (href, onChange)
 import Control.MultiAlternative (orr)
 import Data.Array (concat, filter, foldl, mapMaybe, sort, sortBy, uncons, zip)
 import Data.Date (Date)
 import Data.HashSet (HashSet, delete, fromArray, insert, intersection, toArray, union)
 import Data.HeytingAlgebra ((&&), conj, disj, not)
-import Data.Maybe (Maybe(Just, Nothing), fromMaybe, maybe)
+import Data.Maybe (Maybe(Just, Nothing), fromMaybe, isJust, maybe)
 import Data.Newtype (unwrap)
 import Data.String (Pattern(Pattern), contains, joinWith, split, stripPrefix)
 import Data.Tag (Tag, has, hasIn, isIn, tag, tags, toTag)
@@ -34,8 +34,8 @@ import Data.Tuple.Nested (over1)
 import Education as E
 import Effect.Class (liftEffect)
 import Foreign (unsafeToForeign)
-import Papers as Pa
-import Prelude (bind, compare, discard, map, pure, show, unit, ($), (*>), (-), (<$), (<<<), (<>), (/))
+import Publications as Pu
+import Prelude (bind, compare, discard, map, negate, pure, show, unit, ($), (*>), (/), (<$), (<<<), (<>))
 import Projects as Pr
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (title)
@@ -78,7 +78,7 @@ lifeline' activeFilters = do
       [ subhead
           [ style do
               subheadStyle
-              marginBottom (em 1.0)
+              marginBottom (px 0.0)
               paddingLeft (px 4.0)
               paddingRight (px 4.0)
           ]
@@ -89,8 +89,7 @@ lifeline' activeFilters = do
               flexWrap wrap
               maxWidth (px 1200.0)
               margin auto auto auto auto
-              paddingLeft $ em (filterSuperblockMarginEm / 2.0)
-              paddingRight $ em (filterSuperblockMarginEm / 2.0)
+              padding filterSuperblockVSpace filterSuperblockHSpace filterSuperblockVSpace filterSuperblockHSpace
           ]
           (map
             (\(Tuple (Tuple t c) cs) → filterSuperblock
@@ -167,18 +166,18 @@ filtersMaster =
           , Tuple (toTag E.Bachelors) false
           ]
       ]
-  , Tuple (Tuple paperTag paperColor)
+  , Tuple (Tuple publicationTag publicationColor)
       [ Tuple "type"
-          [ Tuple (toTag Pa.Thesis) true
-          , Tuple (toTag Pa.Journal) true
-          , Tuple (toTag Pa.Conference) false
+          [ Tuple (toTag Pu.Thesis) true
+          , Tuple (toTag Pu.Journal) true
+          , Tuple (toTag Pu.Conference) false
           ]
       , Tuple "topic"
-          [ Tuple (toTag Pa.MachineLearning) true
-          , Tuple (toTag Pa.Optimization) true
-          , Tuple (toTag Pa.IncrementalLearning) true
-          , Tuple (toTag Pa.Search) true
-          , Tuple (toTag Pa.TextSummarization) true
+          [ Tuple (toTag Pu.MachineLearning) true
+          , Tuple (toTag Pu.Optimization) true
+          , Tuple (toTag Pu.IncrementalLearning) true
+          , Tuple (toTag Pu.Search) true
+          , Tuple (toTag Pu.TextSummarization) true
           ]
       ]
   , Tuple (Tuple projectTag projectColor)
@@ -215,15 +214,14 @@ filterSuperblock t c isChecked filters = div
   [ style do
       flexGrow 1
       flexBasis (px 0.0)
-      marginLeft $ em (filterSuperblockMarginEm / 2.0)
-      marginRight $ em (filterSuperblockMarginEm / 2.0)
+      margin filterSuperblockVSpace filterSuperblockHSpace filterSuperblockVSpace filterSuperblockHSpace
       textTransform capitalize
   ]
   [ subsubhead
       [ style do
           subsubheadStyle
           color c
-          marginBottom (em 0.5)
+          marginBottom (px 0.0)
           marginLeft (fromString $ "calc(-2ex - " <> checkboxLabelSpace <> ")")
           textWhitespace whitespaceNoWrap -- Keep checkbox and label on one line
       ]
@@ -232,29 +230,39 @@ filterSuperblock t c isChecked filters = div
       [ style do
           display flex
           flexWrap wrap
-          padding (px 0.0) (px $ filterBlockMarginPx / 2.0) (px 0.0) (px $ filterBlockMarginPx / 2.0)
+          padding (px 0.0) filterBlockSpace (px 0.0) filterBlockSpace
       ]
       (map (\(Tuple ct fs) → filterBlock ct fs isChecked) filters)
   ]
 
-filterSuperblockMarginEm ∷ Number
-filterSuperblockMarginEm = 2.0
+filterSuperblockHSpace ∷ Size Abs
+filterSuperblockHSpace = em (2.0 / 2.0) -- Applied twice. Double in practice.
+
+filterSuperblockVSpace ∷ Size Abs
+filterSuperblockVSpace = em (3.0 / 2.0) -- Applied twice. Double in practice.
 
 filterBlock ∷ String → Array (Tuple Tag Boolean) → Boolean → Widget HTML Tag
 filterBlock category filters isEnabled = div
     [ style do
         flexGrow 1
         flexBasis (px 0.0)
-        margin (px 0.0) (px $ filterBlockMarginPx / 2.0) (px 0.0) (px $ filterBlockMarginPx / 2.0)
+        margin (px 0.0) filterBlockSpace  (px 0.0) filterBlockSpace
         textAlign center
         textTransform capitalize
     ]
-    [ subsubsubhead [] [ text $ category ]
+    [ subsubsubhead
+        [ style do
+            subsubsubheadStyle
+            marginTop (em 1.0)
+            marginBottom (em 1.0)
+        ]
+        [ text $ category ]
     , ul
         [ style do
             listStyleType none
             paddingLeft (px 0.0)
-            marginBottom (em (1.0 - liMarginEm))
+            marginTop (px 0.0)
+            marginBottom (em (-liMarginEm))
             display inlineBlock
             textAlign leftTextAlign
             textWhitespace whitespaceNoWrap
@@ -267,8 +275,8 @@ filterBlock category filters isEnabled = div
   where
     liMarginEm = 0.25
 
-filterBlockMarginPx ∷ Number
-filterBlockMarginPx = 10.0
+filterBlockSpace ∷ Size Abs
+filterBlockSpace = px (10.0 / 2.0) -- Applied twice. Double in practice.
 
 filterWidget ∷ Tag → Boolean → Boolean → Widget HTML Tag
 filterWidget tag isEnabled isChecked = label'
@@ -291,13 +299,13 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
       E.education
     )
     <> (map
-      (\p → { borderColor : paperColor
-            , date : Pa.published p
-            , tags : insert paperTag (tags p)
-            , widget : paperToWidget p
+      (\p → { borderColor : publicationColor
+            , date : Pu.published p
+            , tags : insert publicationTag (tags p)
+            , widget : publicationToWidget p
             }
       )
-      Pa.papers
+      Pu.publications
     )
     <> (map
       (\p → { borderColor : projectColor
@@ -325,9 +333,14 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
       , subsubsubhead
           [ style $ subsubsubheadStyle *> textAlign leftTextAlign ]
           [ text $ (\a → a.district <> ", " <> a.state <> ", " <> a.country) (E.schoolAddress e) ]
-      , subtext' [ text $ show educationTag ]
-      , subtext' [ text $ show (E.degreeType e) ]
-      , subtext' [ text $ "gpa: " <> (show $ E.gpa e) ]
+      , subtext'
+          [ text $
+              show educationTag
+              <> commaSep
+              <> show (E.degreeType e)
+              <> commaSep
+              <> "gpa: " <> (show $ E.gpa e)
+          ]
       ] <> case (E.accolades e) of
         Just acs →
           [ paragraph
@@ -341,27 +354,37 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
               ]
           ]
         Nothing → []
-    paperToWidget p = orr
+    publicationToWidget p = orr
       [ subsubhead
-          [ style $ subsubheadStyle *> textAlign leftTextAlign ]
-          [ a [ href $ unwrap $ Pa.documentUrl p ] [ text $ Pa.name p ] ]
-      , subtext' [ text $ show paperTag ]
-      , subtext'
-          [ case Pa.url p of
-              Just (URL url) → a
-                [ href url, style do
-                    -- Add some space
-                    -- between this link
-                    -- and the one above,
-                    -- for easier tapping.
-                    display inlineBlock
-                    marginTop (em 0.75)
-                ]
-                [ text $ show $ Pa.type_ p ]
-              Nothing → text $ show $ Pa.type_ p
+          [ style do
+              subsubheadStyle
+              textAlign leftTextAlign
+              if isJust $ Pu.url p
+                -- Add extra space
+                -- between this link
+                -- and the one below,
+                -- for easier tapping.
+                then marginBottom (px 12.0)
+                else pure unit
           ]
-      , tagsWidget $ Pa.topics p
-      , paragraph [] [ text (Pa.description p <> ".") ]
+          [ a [ href $ unwrap $ Pu.documentUrl p ] [ text $ Pu.name p ] ]
+      , subtext' case Pu.url p of
+          Just (URL url) →
+            [ span' [ text $ show publicationTag <> commaSep ]
+            , a
+                [ href url ]
+                [ text $ show (Pu.type_ p) ]
+            , span' [ text $ commaSep <> (showTags $ Pu.topics p) ]
+            ]
+          Nothing →
+            [ text $
+                show publicationTag
+                <> commaSep
+                <> show (Pu.type_ p)
+                <> commaSep
+                <> showTags (Pu.topics p)
+            ]
+      , paragraph [] [ text (Pu.description p <> ".") ]
       ]
     projectToWidget p = orr
       [ subsubhead
@@ -370,21 +393,27 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
               Just (URL url) → a [ href url ] [ text $ Pr.name p ]
               Nothing → text $ Pr.name p
           ]
-      -- Note: We sort tags
-      -- because `HashSet` has nondeterministic ordering.
-      , subtext' [ text $ show projectTag ]
-      , tagsWidget $ Pr.types p
-      , tagsWidget $ Pr.topics p
-      , tagsWidget $ Pr.languages p
-      , subtext' [ text $ show $ Pr.scope p ]
+      , subtext'
+        [ text $
+            show projectTag
+            <> commaSep
+            <> showTags (Pr.types p)
+            <> commaSep
+            <> showTags (Pr.topics p)
+            <> commaSep
+            <> showTags (Pr.languages p)
+            <> commaSep
+            <> show (Pr.scope p)
+        ]
       , paragraph [] [ text (Pr.description p <> ".") ]
       ]
-    tagsWidget ts = subtext' [ text $ joinWith ", " $ sort $ map show $ toArray $ ts ]
+    -- Note: We sort tags
+    -- because `HashSet` has nondeterministic ordering.
+    showTags = joinWith commaSep <<< sort <<< map show <<< toArray
+    commaSep = ", "
     subtext' = subtext
       [ style do
           subtextStyle
-          display inlineBlock
-          marginRight (em 1.0)
           textTransform lowercase
       ]
 
@@ -394,11 +423,11 @@ educationTag = tag "education"
 educationColor ∷ Color
 educationColor = brightYellow
 
-paperTag ∷ Tag
-paperTag = tag "paper"
+publicationTag ∷ Tag
+publicationTag = tag "publication"
 
-paperColor ∷ Color
-paperColor = brightBlue
+publicationColor ∷ Color
+publicationColor = brightBlue
 
 projectTag ∷ Tag
 projectTag = tag "project"
