@@ -109,18 +109,14 @@ lifeline' activeFilters = do
               paddingRight $ px 4.0
           ]
           [ timeline $ map
-              (\i → { borderColor : Just i.borderColor, date : i.date, widget : i.widget })
-              (filter
-                (\i → foldl disj false $ map
-                  (\(Tuple t tagSets) →
-                    activeFilters `has` t
-                    && i.tags `has` t
-                    -- Item has a least 1 tag from each category
-                    && (foldl conj true $ map (\f → intersection f activeFilters `hasIn` i.tags) tagSets))
-                  filtersByCategory
-                )
-                timelineItems
+              (\i →
+                { borderColor : Just i.borderColor
+                , date : i.date
+                , hidden : not $ isActive i
+                , widget : i.widget
+                }
               )
+              timelineItems
           ]
       ]
 
@@ -144,6 +140,15 @@ lifeline' activeFilters = do
   where
     filtersUI ∷ Array (Tuple (Tuple Tag Color) (Array (Tuple String (Array Tag))))
     filtersUI = map (over2 (map (over2 (map fst)))) filtersMaster
+
+    isActive ∷ ∀ b. TimelineItem b → Boolean
+    isActive i = foldl disj false $ map
+      (\(Tuple t tagSets) →
+        activeFilters `has` t
+        && i.tags `has` t
+        -- Item has a least 1 tag from each category
+        && (foldl conj true $ map (\f → intersection f activeFilters `hasIn` i.tags) tagSets))
+      filtersByCategory
 
     filtersByCategory ∷ Array (Tuple Tag (Array (HashSet Tag)))
     filtersByCategory = map (over1 fst) $ map (over2 (map (fromArray <<< map fst <<< snd))) filtersMaster

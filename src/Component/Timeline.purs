@@ -1,6 +1,6 @@
 module Component.Timeline where
 
-import CSS (absolute, alignItems, background, bold, border, display, em, flex, flexGrow, flexShrink, fontWeight, height, left, marginBottom, padding, paddingBottom, paddingTop, pct, position, px, relative, solid, vw, width, zIndex)
+import CSS (absolute, alignItems, background, bold, border, display, displayNone, em, flex, flexGrow, flexShrink, fontWeight, height, left, padding, paddingBottom, paddingTop, pct, position, px, relative, solid, vw, width, zIndex)
 import CSS.Common (center)
 import CSS.Render.Concur.React (style)
 import CSS.TextAlign as TA
@@ -9,7 +9,7 @@ import Color.Scheme.Website as C
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div, text)
-import Data.Array (last, sortBy, tail, zip)
+import Data.Array (concatMap, last, sortBy, tail, zip)
 import Data.Date (Date, diff)
 import Data.DateTime (DateTime(DateTime))
 import Data.Enum (toEnum)
@@ -21,24 +21,33 @@ import Data.Time.Duration (Days(Days))
 import Data.Tuple (Tuple(Tuple))
 import Math (abs)
 import Partial.Unsafe (unsafePartial)
-import Prelude (compare, discard, map, negate, ($), (*), (/), (<>))
+import Prelude (compare, discard, negate, ($), (*), (/), (<>))
 
-type TimelineItem a = { borderColor ∷ Maybe Color, date ∷ Date, widget ∷ Widget HTML a }
+type TimelineItem a =
+  { borderColor ∷ Maybe Color
+  , date ∷ Date
+  , hidden ∷ Boolean
+  , widget ∷ Widget HTML a
+  }
 
 timeline ∷ ∀ a. Array (TimelineItem a) → Widget HTML a
 timeline items = div
     [ style $ position relative]
     ([ line ] <>
-      (mapPairs
-        (\(Tuple { borderColor, date, widget } { borderColor : _, date : sndDate, widget : _ }) →
-          timelineWidget (marginFromDays $ diff date sndDate) (fromMaybeColor borderColor) date widget)
-        sortedItems
+      (concatMap
+        (\(Tuple { borderColor, date, hidden, widget } { borderColor : _, date : sndDate, hidden : _, widget : _ }) →
+          [ timelineWidget (fromMaybeColor borderColor) date hidden widget
+          , div [ style $ height (marginFromDays $ diff date sndDate) ] []
+          ]
+        )
+        (pairs sortedItems)
       ) <> case last sortedItems of
-          Just { borderColor, date, widget } → [ timelineWidget (px 0.0) (fromMaybeColor borderColor) date widget ]
+          Just { borderColor, date, hidden, widget } →
+            [ timelineWidget (fromMaybeColor borderColor) date hidden widget ]
           Nothing → []
     )
   where
-    mapPairs f xs = map f (zip xs (fromMaybe [] $ tail xs))
+    pairs xs = zip xs (fromMaybe [] $ tail xs)
     sortedItems = sortBy (\a b → compare b.date a.date) items -- Descending by date
 
     marginFromDays d = px $ 0.25 * (abs $ fromDays $ d)
@@ -46,11 +55,10 @@ timeline items = div
 
     fromMaybeColor = fromMaybe lineColor
 
-    timelineWidget space borderColor date widget = div
+    timelineWidget borderColor date hidden widget = div
       [ style $ do
-          display flex
+          display if hidden then displayNone else flex
           alignItems center
-          marginBottom space
       ]
       [ dateWidget borderColor date
       , connector borderColor
