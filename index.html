@@ -1,16 +1,25 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
     <head>
-        <meta charset="utf-8"/>
-        <title>Justin Lovinger - Machine Learning - Full Stack Web Developer</title>
-        <meta name=description content="See the works of a machine learning expert and full stack web devloper, with several projects and many academic papers."</>
-
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <title>Justin Lovinger - Machine Learning - Full Stack Web Developer</title>
+        <meta name=description content="See the works of a machine learning expert and full stack web devloper, with several projects and many academic papers.">
+        <!--
+        NOTE: This frontend is otherwise agnostic to the domain it is hosted on,
+        and this link could be domain agnostic,
+        using a root relative href, like `href="/"`.
+        However,
+        [Parcel has a bug]
+        (https://github.com/parcel-bundler/parcel/issues/1186)
+        that causes an error
+        with a root relative href link.
+        -->
+        <link rel="canonical" href="https://www.justinlovinger.com/">
+
         <link rel="stylesheet" type="text/css" href="node_modules/normalize.css/normalize.css">
-
         <style id="styleroot"></style>
-
         <script src="index.js" defer></script>
     </head>
     <body>
