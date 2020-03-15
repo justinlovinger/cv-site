@@ -339,12 +339,17 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
           [ style $ subsubsubheadStyle *> textAlign leftTextAlign ]
           [ text $ (\a → a.district <> ", " <> a.state <> ", " <> a.country) (E.schoolAddress e) ]
       , subtext'
-          [ text $
-              show educationTag
-              <> commaSep
-              <> show (E.degreeType e)
-              <> commaSep
-              <> "gpa: " <> (show $ E.gpa e)
+          [ span'
+              [ text $
+                  show educationTag
+                  <> categorySep
+                  <> show (E.degreeType e)
+                  <> categorySep
+              ]
+            -- Don't split
+          , span
+              [ style $ textWhitespace whitespaceNoWrap ]
+              [ text $ (show $ E.gpa e) <> " gpa" ]
           ]
       ] <> case (E.accolades e) of
         Just acs →
@@ -375,18 +380,18 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
           [ a [ href $ unwrap $ Pu.documentUrl p ] [ text $ Pu.name p ] ]
       , subtext' case Pu.url p of
           Just (URL url) →
-            [ span' [ text $ show publicationTag <> commaSep ]
+            [ span' [ text $ show publicationTag <> categorySep ]
             , a
                 [ href url ]
                 [ text $ show (Pu.type_ p) ]
-            , span' [ text $ commaSep <> (showTags $ Pu.topics p) ]
+            , span' [ text $ categorySep <> (showTags $ Pu.topics p) ]
             ]
           Nothing →
             [ text $
                 show publicationTag
-                <> commaSep
+                <> categorySep
                 <> show (Pu.type_ p)
-                <> commaSep
+                <> categorySep
                 <> showTags (Pu.topics p)
             ]
       , paragraph [] [ text (Pu.description p <> ".") ]
@@ -401,26 +406,26 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
       , subtext'
         [ text $
             show projectTag
-            <> commaSep
+            <> categorySep
             <> showTags (Pr.types p)
-            <> commaSep
+            <> categorySep
             <> showTags (Pr.topics p)
-            <> commaSep
+            <> categorySep
             <> showTags (Pr.languages p)
-            <> commaSep
+            <> categorySep
             <> show (Pr.scope p)
         ]
       , paragraph [] [ text (Pr.description p <> ".") ]
       ]
-    -- Note: We sort tags
-    -- because `HashSet` has nondeterministic ordering.
-    showTags = joinWith commaSep <<< sort <<< map show <<< toArray
-    commaSep = ", "
     subtext' = subtext
       [ style do
           subtextStyle
           textTransform lowercase
       ]
+    categorySep = "; "
+    -- Note: We sort tags
+    -- because `HashSet` has nondeterministic ordering.
+    showTags = joinWith ", " <<< sort <<< map show <<< toArray
 
 educationTag ∷ Tag
 educationTag = tag "education"
