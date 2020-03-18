@@ -24,7 +24,8 @@ bouncePauseStylesheet = keyframes "bounce-pause" $
   , 15.0 /\ key (fromString "transform") "translateY(-50%)"
   , 20.0 /\ key (fromString "transform") "translateY(0)"
   , 25.0 /\ key (fromString "transform") "translateY(-50%)"
-  , 30.0 /\ key (fromString "transform") "translateY(0)" ]
+  , 30.0 /\ key (fromString "transform") "translateY(0)"
+  ]
 
 indicatorStyle ∷ CSS
 indicatorStyle = do

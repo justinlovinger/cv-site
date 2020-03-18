@@ -7,7 +7,7 @@ import Color.Scheme.Website as C
 import Component.Contact (contact, contactStylesheet)
 import Component.Indicator (bouncePauseStylesheet)
 import Component.Introduction (introduction)
-import Component.Lifeline (lifeline)
+import Component.Lifeline (lifeline, lifelineStylesheet)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div')
@@ -32,6 +32,7 @@ stylesheet = unsafePartial fromJust $ renderedSheet $ render do
   (element "a" `with` Refinement [ Pseudo "visited", Pseudo "active" ]) ? color C.magenta
   
   bouncePauseStylesheet
+  lifelineStylesheet
   contactStylesheet
 
 app ∷ ∀ a. Widget HTML a

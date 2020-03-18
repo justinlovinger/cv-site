@@ -1,13 +1,13 @@
-module Component.Lifeline (lifeline) where
+module Component.Lifeline (lifeline, lifelineStylesheet) where
 
-import CSS (Abs, Size, color, display, em, flex, flexBasis, flexGrow, flexWrap, fromString, inlineBlock, margin, marginBottom, marginLeft, marginTop, maxWidth, padding, paddingLeft, paddingRight, px, textWhitespace, whitespaceNoWrap, wrap)
+import CSS (Abs, AnimationName(..), CSS, Size, alternate, animation, backwards, color, display, displayInherit, displayNone, easeOut, em, fixed, flex, flexBasis, flexGrow, flexWrap, fromString, height, inlineBlock, inset, insetBoxShadow, iterationCount, key, keyframes, left, margin, marginBottom, marginLeft, marginTop, maxHeight, maxWidth, padding, paddingLeft, paddingRight, pct, position, px, sec, textWhitespace, top, vh, vmin, vw, whitespaceNoWrap, width, wrap, zIndex)
 import CSS.Common (auto, none)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.Render.Concur.React (style)
 import CSS.Text.Transform (capitalize, lowercase, textTransform)
 import CSS.TextAlign (center, leftTextAlign, textAlign)
 import Color (Color)
-import Color.Scheme.Website (brightBlue, brightGreen, brightYellow)
+import Color.Scheme.Website (brightBlue, brightGreen, brightRed, brightYellow)
 import Component.Checkbox (checkbox')
 import Component.Paragraph (paragraph)
 import Component.Subhead (subhead, subheadStyle)
@@ -19,6 +19,7 @@ import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (a, div, div', label', li, li', span, span', text, ul)
 import Concur.React.Props (href, onChange)
+import Control.Alt ((<|>))
 import Control.MultiAlternative (orr)
 import Data.Array (concat, filter, foldl, mapMaybe, sort, sortBy, uncons, zip)
 import Data.Date (Date)
@@ -26,28 +27,39 @@ import Data.HashSet (HashSet, delete, fromArray, insert, intersection, toArray, 
 import Data.HeytingAlgebra ((&&), conj, disj, not)
 import Data.Maybe (Maybe(Just, Nothing), fromMaybe, isJust, maybe)
 import Data.Newtype (unwrap)
+import Data.NonEmpty ((:|))
 import Data.String (Pattern(Pattern), contains, joinWith, split, stripPrefix)
 import Data.Tag (Tag, has, hasIn, isIn, tag, tags, toTag)
 import Data.Tag.Encode (urlDecode, urlEncode)
+import Data.Time.Duration (Seconds(..), fromDuration)
 import Data.Tuple (Tuple(Tuple), fst, lookup, snd)
-import Data.Tuple.Nested (over1)
+import Data.Tuple.Nested (over1, (/\))
 import Education as E
+import Effect (Effect)
+import Effect.Aff (delay)
+import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Foreign (unsafeToForeign)
-import Publications as Pu
-import Prelude (bind, compare, discard, map, negate, pure, show, unit, ($), (*>), (/), (<$), (<<<), (<>))
+import Prelude (class Functor, Unit, bind, compare, discard, map, negate, pure, show, unit, ($), (*>), (/), (<$), (<<<), (<>))
 import Projects as Pr
+import Publications as Pu
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (title)
 import Web.HTML.History (DocumentTitle(DocumentTitle), URL(URL), replaceState)
-import Web.HTML.Location (search)
-import Web.HTML.Window (document, history, location)
+import Web.HTML.Location (hash, pathname, search)
+import Web.HTML.Window (Window, document, history, location)
 
 type TimelineItem a = { borderColor ∷ Color
                       , date ∷ Date
                       , tags ∷ HashSet Tag
                       , widget ∷ Widget HTML a
                       }
+
+lifelineStylesheet ∷ CSS
+lifelineStylesheet = keyframes "show" $
+    0.0    /\ key (fromString "opacity") (show 0) :|
+  [ 100.0  /\ key (fromString "opacity") (show 100)
+  ]
 
 lifeline ∷ ∀ a. Widget HTML a
 lifeline = do
@@ -65,7 +77,19 @@ lifeline = do
         querystring' ∷ String
         querystring' = fromMaybe querystring $ stripPrefix (Pattern "?") querystring 
 
-    lifeline' $ fromMaybe defaultActiveFilters activeFilters
+    case activeFilters of
+      Just af → if hasOnePerCategory af
+        then lifeline' af
+        else do
+          -- Strip query string before continuing
+          liftEffect do
+            pathname_ ← pathname location_
+            hash_ ← hash location_
+            replaceUrl' window_ (pathname_ <> hash_)
+
+          -- Continue with default
+          lifeline' defaultActiveFilters
+      Nothing → lifeline' defaultActiveFilters
   where
     defaultActiveFilters =
       (fromArray $ map (fst <<< fst) filtersMaster) -- Super-category tags
@@ -74,7 +98,29 @@ lifeline = do
 
 lifeline' ∷ ∀ a. HashSet Tag → Widget HTML a
 lifeline' activeFilters = do
-    cb ← div'
+    cb ← lifeline_ false
+
+    -- Update `activeFilters`
+    let activeFilters' = if cb `isIn` activeFilters
+      then delete cb activeFilters
+      else insert cb activeFilters
+
+    if hasOnePerCategory activeFilters' then do
+      -- Update url
+      liftEffect case urlEncode activeFilters' of
+        Just filtersStr → replaceUrl ("?" <> urlFiltersKey <> "=" <> filtersStr)
+        Nothing → pure unit
+
+      -- Recurse with given checkbox flipped
+      lifeline' activeFilters'
+    else do
+      -- Indicate error
+      _ ← (unit <$ lifeline_ true) <|> liftAff (delay $ fromDuration $ Seconds $ errSeconds)
+
+      -- Do not change filters
+      lifeline' activeFilters
+  where
+    lifeline_ showErr = div'
       [ subhead
           [ style do
               subheadStyle
@@ -118,26 +164,37 @@ lifeline' activeFilters = do
               )
               timelineItems
           ]
+      , div
+          [ style do
+              animation
+                (AnimationName $ fromString "show")
+                (sec $ errSeconds / 2.0)
+                easeOut
+                (sec 0.0)
+                (iterationCount 2.0)
+                alternate
+                backwards
+              display if showErr then displayInherit else displayNone
+              insetBoxShadow inset (vw 0.0) (vh 0.0) (fromString "calc(10vw + 10vh)") brightRed
+
+              -- Surround view
+              position fixed
+              top (px 0.0)
+              left (px 0.0)
+              width (vw 100.0)
+              maxWidth (pct 100.0) -- Fix overflow
+              height (vh 100.0)
+              maxHeight (pct 100.0) -- Fix overflow
+
+              -- Display in front of content
+              zIndex (10)
+              key (fromString "pointer-events") "none"
+          ]
+          []
       ]
 
-    -- Update `activeFilters`
-    let activeFilters' = if cb `isIn` activeFilters
-      then delete cb activeFilters
-      else insert cb activeFilters
+    errSeconds = 0.5
 
-
-    -- Update url
-    window_ ← liftEffect window
-    document_ ← liftEffect $ document window_
-    documentTitle ← liftEffect $ title document_
-    history_ ← liftEffect $ history window_
-    liftEffect case urlEncode activeFilters' of
-      Just filtersStr → replaceState (unsafeToForeign "") (DocumentTitle documentTitle) (URL $ "?" <> urlFiltersKey <> "=" <> filtersStr) history_
-      Nothing → pure unit
-
-    -- Recurse with given checkbox flipped
-    lifeline' activeFilters'
-  where
     filtersUI ∷ Array (Tuple (Tuple Tag Color) (Array (Tuple String (Array Tag))))
     filtersUI = map (over2 (map (over2 (map fst)))) filtersMaster
 
@@ -150,13 +207,31 @@ lifeline' activeFilters = do
         && (foldl conj true $ map (\f → intersection f activeFilters `hasIn` i.tags) tagSets))
       filtersByCategory
 
-    filtersByCategory ∷ Array (Tuple Tag (Array (HashSet Tag)))
-    filtersByCategory = map (over1 fst) $ map (over2 (map (fromArray <<< map fst <<< snd))) filtersMaster
-
-    over2 = map -- `map` over `Tuple` is like `over2`
-
 urlFiltersKey ∷ String
 urlFiltersKey = "f"
+
+hasOnePerCategory ∷ HashSet Tag → Boolean
+hasOnePerCategory ts = foldl conj true $ map
+  (\(Tuple _ ctss) → foldl conj true $ map (hasIn ts) ctss)
+  filtersByCategory
+
+filtersByCategory ∷ Array (Tuple Tag (Array (HashSet Tag)))
+filtersByCategory = map (over1 fst) $ map (over2 (map (fromArray <<< map fst <<< snd))) filtersMaster
+
+over2 ∷ ∀ a b f. Functor f ⇒ (a → b) → f a → f b
+over2 = map -- `map` over `Tuple` is like `over2`
+
+replaceUrl ∷ String → Effect Unit
+replaceUrl u = do
+  window_ ← liftEffect window
+  replaceUrl' window_ u
+
+replaceUrl' ∷ Window → String → Effect Unit
+replaceUrl' w u = do
+  document_ ← liftEffect $ document w
+  documentTitle ← liftEffect $ title document_
+  history_ ← liftEffect $ history w
+  replaceState (unsafeToForeign "") (DocumentTitle documentTitle) (URL $ u) history_
 
 -- | The filters master data structure.
 -- | Deconstruct it
