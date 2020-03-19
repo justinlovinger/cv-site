@@ -1,6 +1,6 @@
 module Component.Lifeline (lifeline, lifelineStylesheet) where
 
-import CSS (Abs, AnimationName(..), CSS, Size, alternate, animation, backwards, color, display, displayInherit, displayNone, easeOut, em, fixed, flex, flexBasis, flexGrow, flexWrap, fromString, height, inlineBlock, inset, insetBoxShadow, iterationCount, key, keyframes, left, margin, marginBottom, marginLeft, marginTop, maxHeight, maxWidth, padding, paddingLeft, paddingRight, pct, position, px, sec, textWhitespace, top, vh, vmin, vw, whitespaceNoWrap, width, wrap, zIndex)
+import CSS (Abs, AnimationName(..), CSS, Size, alternate, animation, backwards, color, display, displayInherit, displayNone, easeOut, em, fixed, flex, flexBasis, flexGrow, flexWrap, fromString, height, inlineBlock, inset, insetBoxShadow, iterationCount, key, keyframes, left, margin, marginBottom, marginLeft, marginTop, maxHeight, maxWidth, padding, paddingLeft, paddingRight, pct, position, px, sec, textWhitespace, top, vh, vw, whitespaceNoWrap, width, wrap, zIndex)
 import CSS.Common (auto, none)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.Render.Concur.React (style)
