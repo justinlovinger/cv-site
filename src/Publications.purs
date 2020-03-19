@@ -58,7 +58,7 @@ publications =
       { name : "Harnessing Mother Nature: Optimizing Genetic Algorithms for Adaptive Systems"
       , tags : { type_ : Conference, firstTopic : Optimization, otherTopics : empty }
       , published : unsafeDate 2014 November 3 -- Date of conference
-      , description : "Automatic optimization of genetic algorithm hyperparameters"
+      , description : "Automatically optimize genetic algorithm hyperparameters"
       , documentUrl : URL files.publications."harnessing-mother-nature".url
       , url : Just $ URL "https://www.sciencedirect.com/science/article/pii/S1877050914012824"
       }
@@ -74,7 +74,7 @@ publications =
       { name : "Neural Field: Supervised apportioned incremental learning (SAIL)"
       , tags : { type_ : Conference, firstTopic : MachineLearning, otherTopics : singleton IncrementalLearning }
       , published : unsafeDate 2016 July 24 -- Date of conference
-      , description : "Real-time incremental supervised learning model"
+      , description : "Learn in real-time with a novel incremental supervised learning model"
       , documentUrl : URL files.publications."neural-field".url
       , url : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7727510"
       }
@@ -98,7 +98,7 @@ publications =
       { name : "Enhanced Simplified Memory-bounded A Star (SMA*+)"
       , tags : { type_ : Conference, firstTopic : Search, otherTopics : empty }
       , published : unsafeDate 2017 October 19 -- Date of conference
-      , description : "Improved memory-efficient optimal search algorithm"
+      , description : "Search in low memory environments with a memory-efficient optimal search algorithm"
       , documentUrl : URL files.publications."sma-star-plus".url
       , url : Just $ URL "https://easychair.org/publications/paper/TL2M"
       }
@@ -114,7 +114,7 @@ publications =
       { name : "Infinite Lattice Learner: an ensemble for incremental learning"
       , tags : { type_ : Journal, firstTopic : MachineLearning, otherTopics : singleton IncrementalLearning }
       , published : unsafeDate 2019 September 6 -- Date published
-      , description : "Real-time incremental supervised learning ensemble"
+      , description : "Learn in real-time with a novel incremental supervised learning ensemble"
       , documentUrl : URL files.publications."infinite-lattice-learner".url
       , url : Just $ URL "https://link.springer.com/article/10.1007/s00500-019-04330-7"
       }
