@@ -353,7 +353,7 @@ filterBlock category filters isEnabled = div
         )
     ]
   where
-    liMarginEm = 0.25
+    liMarginEm = 0.5
 
 filterBlockSpace ∷ Size Abs
 filterBlockSpace = px (10.0 / 2.0) -- Applied twice. Double in practice.
