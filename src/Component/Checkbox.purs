@@ -14,7 +14,7 @@ import CSS.Overflow (hidden, overflow)
 import CSS.Render.Concur.React (style)
 import CSS.VerticalAlign (textBottom, verticalAlign)
 import Color (Color, toHexString)
-import Color.Scheme.Website (altBackground, altForeground, foreground)
+import Color.Scheme.SixteenAnsi (ColorScheme)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (input, span)
@@ -24,8 +24,12 @@ import Data.Either (fromRight)
 import Data.String.Base64 (btoa)
 import Partial.Unsafe (unsafePartial)
 
-checkbox' ∷ ∀ a. Boolean → Boolean → Array (ReactProps a) → Widget HTML a
-checkbox' = checkbox checkboxStyle checkedCheckboxStyle disabledCheckboxStyle checkedDisabledCheckboxStyle
+checkbox' ∷ ∀ a. ColorScheme → Boolean → Boolean → Array (ReactProps a) → Widget HTML a
+checkbox' c = checkbox
+  (checkboxStyle c)
+  (checkedCheckboxStyle c)
+  (disabledCheckboxStyle c)
+  (checkedDisabledCheckboxStyle c)
 
 checkbox ∷ ∀ a. CSS → CSS → CSS → CSS → Boolean → Boolean → Array (ReactProps a) → Widget HTML a
 checkbox sty cSty dSty cdSty d c props = orr
@@ -48,29 +52,29 @@ checkbox sty cSty dSty cdSty d c props = orr
           if d then dSty else
             pure unit
   
-checkboxStyle ∷ CSS
-checkboxStyle = do
+checkboxStyle ∷ ColorScheme → CSS
+checkboxStyle c = do
   boxSizing borderBox
   display inlineBlock
   width (ex 2.0)
   height (ex 2.0)
-  border solid (em 0.125) foreground
+  border solid (em 0.125) c.foreground
   verticalAlign textBottom
   key (fromString "cursor") "pointer"
 
-checkedCheckboxStyle ∷ CSS
-checkedCheckboxStyle = do
-  backgroundImage $ checkmarkBgSvg foreground
+checkedCheckboxStyle ∷ ColorScheme → CSS
+checkedCheckboxStyle c = do
+  backgroundImage $ checkmarkBgSvg c.foreground
 
-disabledCheckboxStyle ∷ CSS
-disabledCheckboxStyle = do
-  backgroundColor altBackground
-  borderColor altForeground
+disabledCheckboxStyle ∷ ColorScheme → CSS
+disabledCheckboxStyle c = do
+  backgroundColor c.altBackground
+  borderColor c.altForeground
   key (fromString "cursor") "default"
 
-checkedDisabledCheckboxStyle ∷ CSS
-checkedDisabledCheckboxStyle = checkedCheckboxStyle *> disabledCheckboxStyle *> do
-  backgroundImage $ checkmarkBgSvg altForeground
+checkedDisabledCheckboxStyle ∷ ColorScheme → CSS
+checkedDisabledCheckboxStyle c = checkedCheckboxStyle c *> disabledCheckboxStyle c *> do
+  backgroundImage $ checkmarkBgSvg c.altForeground
 
 checkmarkBgSvg ∷ Color → BackgroundImage
 checkmarkBgSvg c = url $ "data:image/svg+xml;base64," <> checkmarkB64Svg where

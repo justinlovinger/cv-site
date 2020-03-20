@@ -5,7 +5,7 @@ import CSS.Common (center)
 import CSS.Render.Concur.React (style)
 import CSS.TextAlign as TA
 import Color (Color)
-import Color.Scheme.Website as C
+import Color.Scheme.SixteenAnsi (ColorScheme)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div, text)
@@ -30,8 +30,8 @@ type TimelineItem a =
   , widget ∷ Widget HTML a
   }
 
-timeline ∷ ∀ a. Array (TimelineItem a) → Widget HTML a
-timeline items = div
+timeline ∷ ∀ a. ColorScheme → Array (TimelineItem a) → Widget HTML a
+timeline c items = div
     [ style $ position relative]
     ([ line ] <>
       (concatMap
@@ -80,7 +80,7 @@ timeline items = div
           flexShrink 0
           fontWeight bold
           TA.textAlign TA.center
-          background (C.background) -- To hide line
+          background (c.background) -- To hide line
       ]
       [ text $ dateFormat $ DateTime date zeroTime ]
     dateWidthUnit = em
@@ -107,5 +107,5 @@ timeline items = div
           zIndex (-10)
       ]
       []
-    lineColor = C.altForeground
+    lineColor = c.altForeground
     lineWidth = (px 4.0)

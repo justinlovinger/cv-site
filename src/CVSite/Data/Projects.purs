@@ -1,4 +1,4 @@
-module Projects
+module CVSite.Data.Projects
   ( Language(..)
   , Project
   , Scope(..)

@@ -3,6 +3,31 @@
 module Color.Scheme.TempusDawn where
 
 import Color (Color, rgb)
+import Color.Scheme.SixteenAnsi (ColorScheme)
+
+colorScheme ∷ ColorScheme
+colorScheme =
+  { background : background
+  , altBackground : altBackground
+  , foreground : foreground
+  , altForeground : altForeground
+  , black : black
+  , red : red
+  , green : green
+  , yellow : yellow
+  , blue : blue
+  , magenta : magenta
+  , cyan : cyan
+  , white : white
+  , brightBlack : brightBlack
+  , brightRed : brightRed
+  , brightGreen : brightGreen
+  , brightYellow : brightYellow
+  , brightBlue : brightBlue
+  , brightMagenta : brightMagenta
+  , brightCyan : brightCyan
+  , brightWhite : brightWhite
+  }
 
 background ∷ Color
 background = brightWhite

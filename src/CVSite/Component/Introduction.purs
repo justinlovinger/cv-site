@@ -1,17 +1,17 @@
-module Component.Introduction (introduction) where
+module CVSite.Component.Introduction (introduction) where
 
 import CSS (CSS, absolute, alignItems, bottom, color, column, display, flex, flexDirection, fromString, height, justifyContent, key, left, marginBottom, marginTop, minHeight, paddingLeft, paddingRight, pct, position, px, relative, top, vh, width, zIndex)
 import CSS.Common (center)
 import CSS.Overflow (hidden, overflow)
 import CSS.Render.Concur.React (style, styledEl)
 import CSS.TextAlign as TA
-import Color.Scheme.Website (altForeground)
-import Component.DynamicCircles (dynamicCircles)
+import CVSite.Color.Scheme (altForeground)
+import CVSite.Component.DynamicCircles (dynamicCircles)
+import CVSite.Component.Subtext (subtext, subtextStyle)
 import Component.Heading (heading, headingStyle)
 import Component.Indicator (indicator)
 import Component.Subhead (subhead, subheadStyle)
 import Component.Subsubhead (subsubhead)
-import Component.Subtext (subtext, subtextStyle)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (El, div, text)

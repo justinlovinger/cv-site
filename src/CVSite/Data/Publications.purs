@@ -1,4 +1,16 @@
-module Publications (Publication, Topic(..), Type_(..), description, documentUrl, name, publications, published, topics, type_, url) where
+module CVSite.Data.Publications
+  ( Publication
+  , Topic(..)
+  , Type_(..)
+  , description
+  , documentUrl
+  , name
+  , publications
+  , published
+  , topics
+  , type_
+  , url
+  ) where
 
 import Prelude
 

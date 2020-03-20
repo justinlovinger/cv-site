@@ -1,4 +1,4 @@
-module Education
+module CVSite.Data.Education
   ( DegreeType(..)
   , Education
   , accolades

@@ -1,13 +1,13 @@
-module Component.App where
+module CVSite.Component.App where
 
 import Prelude
 
 import CSS ((?), GenericFontFamily(..), Predicate(Pseudo), Refinement(Refinement), background, color, element, fontFamily, fontSize, fromString, key, noneTextDecoration, pct, render, renderedSheet, sansSerif, textDecoration, with)
-import Color.Scheme.Website as C
-import Component.Contact (contact, contactStylesheet)
+import CVSite.Component.Contact (contact, contactStylesheet)
+import CVSite.Component.Introduction (introduction)
+import CVSite.Component.Lifeline (lifeline, lifelineStylesheet)
+import CVSite.Color.Scheme as C
 import Component.Indicator (bouncePauseStylesheet)
-import Component.Introduction (introduction)
-import Component.Lifeline (lifeline, lifelineStylesheet)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (div')

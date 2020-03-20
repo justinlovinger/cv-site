@@ -1,4 +1,4 @@
-module Component.Lifeline (lifeline, lifelineStylesheet) where
+module CVSite.Component.Lifeline (lifeline, lifelineStylesheet) where
 
 import CSS (Abs, AnimationName(..), CSS, Size, alternate, animation, backwards, color, display, displayInherit, displayNone, easeOut, em, fixed, flex, flexBasis, flexGrow, flexWrap, fromString, height, inlineBlock, inset, insetBoxShadow, iterationCount, key, keyframes, left, margin, marginBottom, marginLeft, marginTop, maxHeight, maxWidth, padding, paddingLeft, paddingRight, pct, position, px, sec, textWhitespace, top, vh, vw, whitespaceNoWrap, width, wrap, zIndex)
 import CSS.Common (auto, none)
@@ -6,15 +6,18 @@ import CSS.ListStyle.Type (listStyleType)
 import CSS.Render.Concur.React (style)
 import CSS.Text.Transform (capitalize, lowercase, textTransform)
 import CSS.TextAlign (center, leftTextAlign, textAlign)
+import CVSite.Color.Scheme (brightBlue, brightGreen, brightRed, brightYellow)
+import CVSite.Component.Checkbox (checkbox')
+import CVSite.Component.Subtext (subtext, subtextStyle)
+import CVSite.Component.Timeline (timeline)
+import CVSite.Data.Education as E
+import CVSite.Data.Projects as Pr
+import CVSite.Data.Publications as Pu
 import Color (Color)
-import Color.Scheme.Website (brightBlue, brightGreen, brightRed, brightYellow)
-import Component.Checkbox (checkbox')
 import Component.Paragraph (paragraph)
 import Component.Subhead (subhead, subheadStyle)
 import Component.Subsubhead (subsubhead, subsubheadStyle)
 import Component.Subsubsubhead (subsubsubhead, subsubsubheadStyle)
-import Component.Subtext (subtext, subtextStyle)
-import Component.Timeline (timeline)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (a, div, div', label', li, li', span, span', text, ul)
@@ -34,15 +37,12 @@ import Data.Tag.Encode (urlDecode, urlEncode)
 import Data.Time.Duration (Seconds(..), fromDuration)
 import Data.Tuple (Tuple(Tuple), fst, lookup, snd)
 import Data.Tuple.Nested (over1, (/\))
-import Education as E
 import Effect (Effect)
 import Effect.Aff (delay)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Foreign (unsafeToForeign)
 import Prelude (class Functor, Unit, bind, compare, discard, map, negate, pure, show, unit, ($), (*>), (/), (<$), (<<<), (<>))
-import Projects as Pr
-import Publications as Pu
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (title)
 import Web.HTML.History (DocumentTitle(DocumentTitle), URL(URL), replaceState)

@@ -4,7 +4,7 @@ module Component.DynamicCircles (dynamicCircles) where
 
 import Prelude
 
-import Color.Scheme.Website as C
+import Color.Scheme.SixteenAnsi (ColorScheme)
 import Concur.Core (Widget)
 import Concur.React (HTML)
 import Concur.React.DOM (canvas)
@@ -34,10 +34,10 @@ import Unsafe.Coerce (unsafeCoerce)
 
 type Circle = { x ∷ Number, y ∷ Number, size ∷ Number }
 
-scene ∷ Mouse → { w ∷ Number, h ∷ Number } → Behavior Drawing
-scene mouse { w, h } = pure background <> map renderCircles circles where
+scene ∷ ColorScheme → Mouse → { w ∷ Number, h ∷ Number } → Behavior Drawing
+scene c mouse { w, h } = pure background <> map renderCircles circles where
   background ∷ Drawing
-  background = filled (fillColor C.background) (rectangle 0.0 0.0 w h)
+  background = filled (fillColor c.background) (rectangle 0.0 0.0 w h)
 
   renderCircles ∷ Array Circle → Drawing
   renderCircles = foldMap renderCircle
@@ -46,7 +46,7 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
   renderCircle { x, y, size } =
     scale scaleFactor scaleFactor <<< translate x y <<< scale size size $
       outlined
-        (outlineColor C.altBackground <> lineWidth ((1.0 + size * 2.0) / scaleFactor))
+        (outlineColor c.altBackground <> lineWidth ((1.0 + size * 2.0) / scaleFactor))
         (circle 0.0 0.0 0.5)
 
   circles ∷ Behavior (Array Circle)
@@ -68,7 +68,7 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
 
   toCircles ∷ Maybe { x ∷ Int, y ∷ Int } → Number → Array Circle
   toCircles Nothing _ = []
-  toCircles (Just pos) sw = filter (\c → c.size > 0.0) do
+  toCircles (Just pos) sw = filter (\x → x.size > 0.0) do
       i ← 0 .. (numCircles - 1)
       j ← 0 .. (numCircles - 1)
       let x = toNumber i
@@ -112,8 +112,8 @@ scene mouse { w, h } = pure background <> map renderCircles circles where
   numCircles ∷ Int
   numCircles = 13
 
-dynamicCircles ∷ ∀ a. Number → Number → Widget HTML a
-dynamicCircles w h = do
+dynamicCircles ∷ ∀ a. ColorScheme → Number → Number → Widget HTML a
+dynamicCircles c w h = do
     canvasId ← liftEffect random
     canvas [ _id $ show canvasId, width (show w), height (show h) ] []
       -- Start with delay, for canvas to mount.
@@ -133,7 +133,7 @@ dynamicCircles w h = do
           -- or Element.
           mouse ← getMouse $ unsafeCoerce canvas
           ctx ← getContext2D canvas
-          stop ← animate (scene mouse { w, h }) (render ctx)
+          stop ← animate (scene c mouse { w, h }) (render ctx)
           _ ← launchAff $ stopWithoutCanvas idx stop mouse -- Stop when canvas disappears
           pure unit
         Nothing → pure unit

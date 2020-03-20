@@ -1,4 +1,4 @@
-module Component.Contact (contact, contactStylesheet) where
+module CVSite.Component.Contact (contact, contactStylesheet) where
 
 import CSS (CSS, Predicate(Class), Refinement(Refinement), display, displayNone, element, em, marginBottom, minHeight, paddingLeft, paddingRight, paddingTop, px, vh, with, (?))
 import CSS.Render.Concur.React (style)
