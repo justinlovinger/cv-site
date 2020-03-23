@@ -1,18 +1,19 @@
 module CVSite.Component.Lifeline (lifeline, lifelineStylesheet) where
 
-import CSS (Abs, AnimationName(..), CSS, Size, alternate, animation, backwards, color, display, displayInherit, displayNone, easeOut, em, fixed, flex, flexBasis, flexGrow, flexWrap, fromString, height, inlineBlock, inset, insetBoxShadow, iterationCount, key, keyframes, left, margin, marginBottom, marginLeft, marginTop, maxHeight, maxWidth, padding, paddingLeft, paddingRight, pct, position, px, sec, textWhitespace, top, vh, vw, whitespaceNoWrap, width, wrap, zIndex)
-import CSS.Common (auto, none)
-import CSS.ListStyle.Type (listStyleType)
+import CSS (AnimationName(..), CSS, alternate, animation, backwards, display, displayInherit, displayNone, easeOut, fixed, fromString, height, inlineBlock, inset, insetBoxShadow, iterationCount, key, keyframes, left, margin, marginBottom, maxHeight, maxWidth, paddingLeft, paddingRight, pct, position, px, sec, textWhitespace, top, vh, vw, whitespaceNoWrap, width, zIndex)
+import CSS.Common (auto)
 import CSS.Render.Concur.React (style)
 import CSS.Text.Transform (capitalize, lowercase, textTransform)
-import CSS.TextAlign (center, leftTextAlign, textAlign)
+import CSS.TextAlign (leftTextAlign, textAlign)
 import CVSite.Color.Scheme (brightBlue, brightGreen, brightRed, brightYellow)
-import CVSite.Component.Checkbox (checkbox')
+import CVSite.Component.Filter (filterSuperblockContainer)
 import CVSite.Component.Subtext (subtext, subtextStyle)
 import CVSite.Component.Timeline (timeline)
 import CVSite.Data.Education as E
 import CVSite.Data.Projects as Pr
 import CVSite.Data.Publications as Pu
+import CVSite.Data.Tags (Tag(..), tags)
+import CVSite.Data.Tags.Encode (urlDecode, urlEncode)
 import Color (Color)
 import Component.Paragraph (paragraph)
 import Component.Subhead (subhead, subheadStyle)
@@ -20,29 +21,28 @@ import Component.Subsubhead (subsubhead, subsubheadStyle)
 import Component.Subsubsubhead (subsubsubhead, subsubsubheadStyle)
 import Concur.Core (Widget)
 import Concur.React (HTML)
-import Concur.React.DOM (a, div, div', label', li, li', span, span', text, ul)
-import Concur.React.Props (href, onChange)
+import Concur.React.DOM (a, div, div', li', span, span', text, ul)
+import Concur.React.Props (href)
 import Control.Alt ((<|>))
 import Control.MultiAlternative (orr)
 import Data.Array (concat, filter, foldl, mapMaybe, sort, sortBy, uncons, zip)
 import Data.Date (Date)
 import Data.HashSet (HashSet, delete, fromArray, insert, intersection, toArray, union)
+import Data.HashSet.Ext (has, hasIn, isIn)
 import Data.HeytingAlgebra ((&&), conj, disj, not)
 import Data.Maybe (Maybe(Just, Nothing), fromMaybe, isJust, maybe)
 import Data.Newtype (unwrap)
 import Data.NonEmpty ((:|))
 import Data.String (Pattern(Pattern), contains, joinWith, split, stripPrefix)
-import Data.Tag (Tag, has, hasIn, isIn, tag, tags, toTag)
-import Data.Tag.Encode (urlDecode, urlEncode)
 import Data.Time.Duration (Seconds(..), fromDuration)
 import Data.Tuple (Tuple(Tuple), fst, lookup, snd)
-import Data.Tuple.Nested (over1, (/\))
+import Data.Tuple.Nested (over1, tuple4, (/\))
 import Effect (Effect)
 import Effect.Aff (delay)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Foreign (unsafeToForeign)
-import Prelude (class Functor, Unit, bind, compare, discard, map, negate, pure, show, unit, ($), (*>), (/), (<$), (<<<), (<>))
+import Prelude (class Functor, Unit, bind, compare, discard, map, pure, show, unit, ($), (*>), (/), (<$), (<<<), (<>))
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (title)
 import Web.HTML.History (DocumentTitle(DocumentTitle), URL(URL), replaceState)
@@ -68,8 +68,8 @@ lifeline = do
     location_ ← liftEffect $ location window_
     querystring ← liftEffect $ search location_
 
-    let activeFilters ∷ Maybe (HashSet Tag)
-        activeFilters = maybe Nothing urlDecode $ lookup urlFiltersKey queries
+    let encodedFilters ∷ Maybe String
+        encodedFilters = lookup urlFiltersKey queries
 
         queries ∷ Array (Tuple String String)
         queries = mapMaybe (maybe Nothing (\{head, tail} → Just $ Tuple head (joinWith "=" $ tail)) <<< uncons) $ map (split $ Pattern "=") $ filter (contains $ Pattern "=") $ split (Pattern "&") querystring'
@@ -77,20 +77,27 @@ lifeline = do
         querystring' ∷ String
         querystring' = fromMaybe querystring $ stripPrefix (Pattern "?") querystring 
 
-    case activeFilters of
-      Just af → if hasOnePerCategory af
-        then lifeline' af
-        else do
-          -- Strip query string before continuing
-          liftEffect do
-            pathname_ ← pathname location_
-            hash_ ← hash location_
-            replaceUrl' window_ (pathname_ <> hash_)
-
-          -- Continue with default
-          lifeline' defaultActiveFilters
+    case encodedFilters of
+      Just s → case urlDecode s of
+        -- Valid filters
+        Just af → if hasOnePerCategory af
+          then lifeline' af -- Valid filters for each category
+          else stripAndDefault window_ location_ -- Missing filters
+        -- Invalid filters
+        Nothing → stripAndDefault window_ location_
+      -- No query string
       Nothing → lifeline' defaultActiveFilters
   where
+    stripAndDefault w l = do
+      -- Strip query string before continuing
+      liftEffect do
+        pathname_ ← pathname l
+        hash_ ← hash l
+        replaceUrl' w (pathname_ <> hash_)
+
+      -- Continue with default
+      lifeline' defaultActiveFilters
+
     defaultActiveFilters =
       (fromArray $ map (fst <<< fst) filtersMaster) -- Super-category tags
       `union`
@@ -107,9 +114,7 @@ lifeline' activeFilters = do
 
     if hasOnePerCategory activeFilters' then do
       -- Update url
-      liftEffect case urlEncode activeFilters' of
-        Just filtersStr → replaceUrl ("?" <> urlFiltersKey <> "=" <> filtersStr)
-        Nothing → pure unit
+      liftEffect $ replaceUrl ("?" <> urlFiltersKey <> "=" <> urlEncode activeFilters')
 
       -- Recurse with given checkbox flipped
       lifeline' activeFilters'
@@ -131,22 +136,20 @@ lifeline' activeFilters = do
           [ text "Wondering what I've done?" ]
       , div
           [ style do
-              display flex
-              flexWrap wrap
               maxWidth (px 1200.0)
               margin auto auto auto auto
-              padding filterSuperblockVSpace filterSuperblockHSpace filterSuperblockVSpace filterSuperblockHSpace
           ]
-          (map
-            (\(Tuple (Tuple t c) cs) → filterSuperblock
-              t
-              c
-              (activeFilters `has` t)
-              -- Zip filter tags with active boolean
-              (map (over2 (\ts → zip ts $ map (has activeFilters) ts)) cs)
-            )
-            filtersUI
-          )
+          [ filterSuperblockContainer $
+              map
+                (\(Tuple (Tuple t c) cs) → tuple4
+                  t
+                  c
+                  -- Zip filter tags with active boolean
+                  (map (over2 (\ts → zip ts $ map (has activeFilters) ts)) cs)
+                  (activeFilters `has` t)
+                )
+                filtersUI
+          ]
       , div
           [ style do
               maxWidth (px 850.0)
@@ -240,139 +243,61 @@ replaceUrl' w u = do
 -- | and more.
 filtersMaster ∷ Array (Tuple (Tuple Tag Color) (Array (Tuple String (Array (Tuple Tag Boolean)))))
 filtersMaster =
-  [ Tuple (Tuple educationTag educationColor)
+  [ Tuple (Tuple Education educationColor)
       [ Tuple "degree"
-          [ Tuple (toTag E.Masters) true
-          , Tuple (toTag E.Bachelors) false
+          [ Tuple Masters true
+          , Tuple Bachelors false
           ]
       ]
-  , Tuple (Tuple publicationTag publicationColor)
+  , Tuple (Tuple Publication publicationColor)
       [ Tuple "type"
-          [ Tuple (toTag Pu.Thesis) true
-          , Tuple (toTag Pu.Journal) true
-          , Tuple (toTag Pu.Conference) false
+          [ Tuple Thesis true
+          , Tuple Journal true
+          , Tuple Conference false
           ]
       , Tuple "topic"
-          [ Tuple (toTag Pu.MachineLearning) true
-          , Tuple (toTag Pu.Optimization) true
-          , Tuple (toTag Pu.IncrementalLearning) true
-          , Tuple (toTag Pu.Search) true
-          , Tuple (toTag Pu.TextSummarization) true
+          [ Tuple PuMachineLearning true
+          , Tuple PuOptimization true
+          , Tuple PuIncrementalLearning true
+          , Tuple PuSearch true
+          , Tuple PuTextSummarization true
           ]
       ]
-  , Tuple (Tuple projectTag projectColor)
+  , Tuple (Tuple Project projectColor)
       [ Tuple "type"
-          [ Tuple (toTag Pr.Website) true
-          , Tuple (toTag Pr.PWA) true
-          , Tuple (toTag Pr.Library) true
-          , Tuple (toTag Pr.Template) true
-          , Tuple (toTag Pr.Game) false
+          [ Tuple Website true
+          , Tuple PWA true
+          , Tuple Library true
+          , Tuple Template true
+          , Tuple Game false
           ]
       , Tuple "topic"
-          [ Tuple (toTag Pr.MachineLearning) true
-          , Tuple (toTag Pr.Optimization) true
-          , Tuple (toTag Pr.TextSummarization) true
-          , Tuple (Pr.noTopics) true
+          [ Tuple PrMachineLearning true
+          , Tuple PrOptimization true
+          , Tuple PrTextSummarization true
+          , Tuple PrNoTopics true
           ]
       , Tuple "language"
-          [ Tuple (toTag Pr.Nix) true
-          , Tuple (toTag Pr.PureScript) true
-          , Tuple (toTag Pr.Python) true
-          , Tuple (toTag Pr.Javascript) true
-          , Tuple (toTag Pr.CSharp) true
+          [ Tuple Nix true
+          , Tuple PureScript true
+          , Tuple Python true
+          , Tuple JavaScript true
+          , Tuple CSharp true
           ]
       , Tuple "scope"
-          [ Tuple (toTag Pr.Major) true
-          , Tuple (toTag Pr.Medium) true
-          , Tuple (toTag Pr.Minor) false
+          [ Tuple Major true
+          , Tuple Medium true
+          , Tuple Minor false
           ]
       ]
   ]
-
-filterSuperblock ∷ Tag → Color → Boolean → Array (Tuple String (Array (Tuple Tag Boolean))) → Widget HTML Tag
-filterSuperblock t c isChecked filters = div
-  [ style do
-      flexGrow 1
-      flexBasis (px 0.0)
-      margin filterSuperblockVSpace filterSuperblockHSpace filterSuperblockVSpace filterSuperblockHSpace
-      textTransform capitalize
-  ]
-  [ subsubhead
-      [ style do
-          subsubheadStyle
-          color c
-          marginBottom (px 0.0)
-          marginLeft (fromString $ "calc(-2ex - " <> checkboxLabelSpace <> ")")
-          textWhitespace whitespaceNoWrap -- Keep checkbox and label on one line
-      ]
-      [ filterWidget t true isChecked ]
-  , div
-      [ style do
-          display flex
-          flexWrap wrap
-          padding (px 0.0) filterBlockSpace (px 0.0) filterBlockSpace
-      ]
-      (map (\(Tuple ct fs) → filterBlock ct fs isChecked) filters)
-  ]
-
-filterSuperblockHSpace ∷ Size Abs
-filterSuperblockHSpace = em (2.0 / 2.0) -- Applied twice. Double in practice.
-
-filterSuperblockVSpace ∷ Size Abs
-filterSuperblockVSpace = em (3.0 / 2.0) -- Applied twice. Double in practice.
-
-filterBlock ∷ String → Array (Tuple Tag Boolean) → Boolean → Widget HTML Tag
-filterBlock category filters isEnabled = div
-    [ style do
-        flexGrow 1
-        flexBasis (px 0.0)
-        margin (px 0.0) filterBlockSpace  (px 0.0) filterBlockSpace
-        textAlign center
-        textTransform capitalize
-    ]
-    [ subsubsubhead
-        [ style do
-            subsubsubheadStyle
-            marginTop (em 1.0)
-            marginBottom (em 1.0)
-        ]
-        [ text $ category ]
-    , ul
-        [ style do
-            listStyleType none
-            paddingLeft (px 0.0)
-            marginTop (px 0.0)
-            marginBottom (em (-liMarginEm))
-            display inlineBlock
-            textAlign leftTextAlign
-            textWhitespace whitespaceNoWrap
-        ]
-        (map
-          (\(Tuple tag isChecked) → li [ style $ marginBottom (em liMarginEm) ] [ filterWidget tag isEnabled isChecked ])
-          filters
-        )
-    ]
-  where
-    liMarginEm = 0.5
-
-filterBlockSpace ∷ Size Abs
-filterBlockSpace = px (10.0 / 2.0) -- Applied twice. Double in practice.
-
-filterWidget ∷ Tag → Boolean → Boolean → Widget HTML Tag
-filterWidget tag isEnabled isChecked = label'
-  [ checkbox' (not isEnabled) isChecked [ tag <$ onChange ]
-  , span [ style $ marginLeft (fromString checkboxLabelSpace) ] [ text $ (show tag) ]
-  ]
-
-checkboxLabelSpace ∷ String
-checkboxLabelSpace = "0.5ch"
 
 timelineItems ∷ ∀ a. Array (TimelineItem a)
 timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descending date
     (map
       (\e → { borderColor : educationColor
             , date : E.graduated e
-            , tags : insert educationTag (tags e)
+            , tags : tags e
             , widget : educationToWidget e
             }
       )
@@ -381,7 +306,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
     <> (map
       (\p → { borderColor : publicationColor
             , date : Pu.published p
-            , tags : insert publicationTag (tags p)
+            , tags : tags p
             , widget : publicationToWidget p
             }
       )
@@ -390,7 +315,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
     <> (map
       (\p → { borderColor : projectColor
             , date : Pr.updated p
-            , tags : insert projectTag (tags p)
+            , tags : tags p
             , widget : projectToWidget p
             }
       )
@@ -416,7 +341,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
       , subtext'
           [ span'
               [ text $
-                  show educationTag
+                  show Education
                   <> categorySep
                   <> show (E.degreeType e)
                   <> categorySep
@@ -455,7 +380,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
           [ a [ href $ unwrap $ Pu.documentUrl p ] [ text $ Pu.name p ] ]
       , subtext' case Pu.url p of
           Just (URL url) →
-            [ span' [ text $ show publicationTag <> categorySep ]
+            [ span' [ text $ show Publication <> categorySep ]
             , a
                 [ href url ]
                 [ text $ show (Pu.type_ p) ]
@@ -463,7 +388,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
             ]
           Nothing →
             [ text $
-                show publicationTag
+                show Publication
                 <> categorySep
                 <> show (Pu.type_ p)
                 <> categorySep
@@ -480,7 +405,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
           ]
       , subtext'
         [ text $
-            show projectTag
+            show Project
             <> categorySep
             <> showTags (Pr.types p)
             <> categorySep
@@ -500,22 +425,14 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
     categorySep = "; "
     -- Note: We sort tags
     -- because `HashSet` has nondeterministic ordering.
+    showTags ∷ HashSet Tag → String
     showTags = joinWith ", " <<< sort <<< map show <<< toArray
-
-educationTag ∷ Tag
-educationTag = tag "education"
 
 educationColor ∷ Color
 educationColor = brightYellow
 
-publicationTag ∷ Tag
-publicationTag = tag "publication"
-
 publicationColor ∷ Color
 publicationColor = brightBlue
-
-projectTag ∷ Tag
-projectTag = tag "project"
 
 projectColor ∷ Color
 projectColor = brightGreen

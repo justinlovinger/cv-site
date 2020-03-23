@@ -1,6 +1,5 @@
 module CVSite.Data.Education
-  ( DegreeType(..)
-  , Education
+  ( Education
   , accolades
   , degreeProgram
   , degreeType
@@ -11,14 +10,12 @@ module CVSite.Data.Education
   , schoolName
   ) where
 
-import Prelude
-
+import CVSite.Data.Tags (class TagLike, class Tagged, Tag, toTag)
+import CVSite.Data.Tags as T
 import Data.Date (Date, Month(..))
 import Data.Date.Unsafe (unsafeDate)
-import Data.HashSet (singleton)
-import Data.Hashable (class Hashable, hash)
+import Data.HashSet (fromArray)
 import Data.Maybe (Maybe(..))
-import Data.Tag (class TagLike, class Tagged, Tag, tag, toTag)
 
 newtype Education = Education
   { school ∷ School
@@ -29,7 +26,7 @@ newtype Education = Education
   }
 
 instance taggedEducation ∷ Tagged Education where
-  tags e = singleton $ degreeType e
+  tags e = fromArray [ T.Education, degreeType e ]
 
 type School = { name ∷ String, address ∷ Address }
 
@@ -41,15 +38,15 @@ type Address =
   , postalCode ∷ String
   }
 
-data DegreeType = PhD | Masters | Bachelors
-instance tagLikeDegreeType ∷ TagLike DegreeType where toTag = tag <<< show
-instance hashableDegreeType ∷ Hashable DegreeType where hash = hash <<< show
-derive instance eqDegreeType ∷ Eq DegreeType
-instance showDegreeType ∷ Show DegreeType where
-  show PhD = "PhD"
-  show Masters = "masters"
-  show Bachelors = "bachelors"
+data DegreeType = Masters | Bachelors
 
+instance tagLikeDegreeType ∷ TagLike DegreeType where
+  toTag Masters = T.Masters
+  toTag Bachelors = T.Bachelors
+
+-- Note: unsafe operations are used
+-- because these values are manually written
+-- and will not change at runtime.
 education ∷ Array Education
 education =
   [ Education

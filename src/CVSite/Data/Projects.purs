@@ -1,14 +1,9 @@
 module CVSite.Data.Projects
-  ( Language(..)
-  , Project
-  , Scope(..)
-  , Topic(..)
-  , Type_(..)
+  ( Project
   , description
   , languages
   , longDescription
   , name
-  , noTopics
   , projects
   , published
   , scope
@@ -21,21 +16,23 @@ module CVSite.Data.Projects
 
 import Prelude
 
+import CVSite.Data.Tags (class TagLike, class Tagged, Tag, toTag)
+import CVSite.Data.Tags as T
+import Data.Array.NonEmpty (NonEmptyArray, singleton)
+import Data.Array.NonEmpty.Unsafe (unsafeFromArray)
 import Data.Date (Date, Month(January, February, March, April, June, July, September, October, November, December))
 import Data.Date.Unsafe (unsafeDate)
-import Data.HashSet (HashSet, empty, insert, singleton, union)
+import Data.HashSet (HashSet, fromArray, fromFoldable, union)
 import Data.HashSet as HS
-import Data.Hashable (class Hashable, hash)
 import Data.Maybe (Maybe(Just, Nothing), maybe)
-import Data.Tag (class TagLike, class Tagged, Tag, namespacedTag, tag, toTag)
 import Generated.Files (files)
 import Web.HTML.History (URL(URL))
 
 newtype Project = Project
   { name ∷ String
-  , tags ∷ { firstType ∷ Type_, otherTypes ∷ HashSet Type_
-           , topics ∷ Maybe { firstTopic ∷ Topic, otherTopics ∷ HashSet Topic }
-           , firstLanguage ∷ Language, otherLanguages ∷ HashSet Language
+  , tags ∷ { types ∷ NonEmptyArray Type_
+           , topics ∷ Maybe (NonEmptyArray Topic)
+           , languages ∷ NonEmptyArray Language
            , scope ∷ Scope
            }
   , published ∷ Date
@@ -47,68 +44,52 @@ newtype Project = Project
   }
 
 instance taggedProject ∷ Tagged Project where
-  tags p = scope p `insert` types p `union` topics p `union` languages p
+  tags p = fromArray [ T.Project, scope p ] `union` types p `union` topics p `union` languages p
 
 data Type_ = Website | PWA | Library | Template | Game
-instance tagLikeType_ ∷ TagLike Type_ where toTag = tag <<< show
-instance hashableType_ ∷ Hashable Type_ where hash = hashShow
-derive instance eqType_ ∷ Eq Type_
-instance showType_ ∷ Show Type_ where
-  show Website = "website"
-  show PWA = "PWA"
-  show Library = "library"
-  show Template = "template"
-  show Game = "game"
+
+instance tagLikeType_ ∷ TagLike Type_ where
+  toTag Website = T.Website
+  toTag PWA = T.PWA
+  toTag Library = T.Library
+  toTag Template = T.Template
+  toTag Game = T.Game
 
 data Topic = MachineLearning
            | Optimization
            | TextSummarization
-instance tagLikeTopic ∷ TagLike Topic where toTag = namespacedTag "pr" <<< show
-instance hashableTopic ∷ Hashable Topic where hash = hashShow
-derive instance eqTopic ∷ Eq Topic
-instance showTopic ∷ Show Topic where
-  show MachineLearning = "machine learning"
-  show Optimization = "optimization"
-  show TextSummarization = "text summarization"
 
-data Language = Nix | PureScript | Python | Javascript | CSharp
-instance tagLikeLanguage ∷ TagLike Language where toTag = tag <<< show
-instance hashableLanguage ∷ Hashable Language where hash = hashShow
-derive instance eqLanguage ∷ Eq Language
-instance showLanguage ∷ Show Language where
-  show Nix = "Nix"
-  show PureScript = "PureScript"
-  show Python = "Python"
-  show Javascript = "JavaScript"
-  show CSharp = "C#"
+instance tagLikeTopic ∷ TagLike Topic where
+  toTag MachineLearning = T.PrMachineLearning
+  toTag Optimization = T.PrOptimization
+  toTag TextSummarization = T.PrTextSummarization
+
+data Language = Nix | PureScript | Python | JavaScript | CSharp
+
+instance tagLikeLanguage ∷ TagLike Language where
+  toTag Nix = T.Nix
+  toTag PureScript = T.PureScript
+  toTag Python = T.Python
+  toTag JavaScript = T.JavaScript
+  toTag CSharp = T.CSharp
 
 data Scope = Major | Medium | Minor
-instance tagLikeScope ∷ TagLike Scope where toTag = tag <<< show
-instance hashScope ∷ Hashable Scope where hash = hashShow
-derive instance eqScope ∷ Eq Scope
-instance showScope ∷ Show Scope where
-  show Major = "major"
-  show Medium = "medium"
-  show Minor = "minor"
 
--- Note: Manually assigning a number
--- to each data entry
--- would be more efficient,
--- but harder to maintain.
-hashShow ∷ ∀ a. Show a ⇒ a → Int
-hashShow = hash <<< show
+instance tagLikeScope ∷ TagLike Scope where
+  toTag Major = T.Major
+  toTag Medium = T.Medium
+  toTag Minor = T.Minor
 
--- Note: dates are constructed
--- with an unsafe `unsafeDate`
--- because these dates are manually written
--- and will not change.
+-- Note: unsafe operations are used
+-- because these values are manually written
+-- and will not change at runtime.
 projects ∷ Array Project 
 projects =
   [ Project
       { name : "Labyrinth RL"
-      , tags : { firstType : Game, otherTypes : empty
+      , tags : { types : singleton Game
                , topics : Nothing
-               , firstLanguage : Python, otherLanguages : empty
+               , languages : singleton Python
                , scope : Medium
                }
       , published : unsafeDate 2014 October 20 -- Date of last commit
@@ -120,9 +101,9 @@ projects =
       }
   , Project
       { name : "Gladiator Manager"
-      , tags : { firstType : Game, otherTypes : empty
+      , tags : { types : singleton Game
                , topics : Nothing
-               , firstLanguage : CSharp, otherLanguages : empty
+               , languages : singleton CSharp
                , scope : Medium
                }
       , published : unsafeDate 2014 December 10 -- Date of last modified file
@@ -134,9 +115,9 @@ projects =
       }
   , Project
       { name : "Gist"
-      , tags : { firstType : Website, otherTypes : empty
-               , topics : Just { firstTopic : TextSummarization, otherTopics : singleton Optimization }
-               , firstLanguage : Python, otherLanguages : singleton Javascript
+      , tags : { types : singleton Website
+               , topics : Just $ unsafeFromArray [ TextSummarization, Optimization ]
+               , languages : unsafeFromArray [ Python, JavaScript]
                , scope : Major
                }
       , published : unsafeDate 2016 February 12 -- Date of first App Engine version
@@ -148,9 +129,9 @@ projects =
       }
   , Project
       { name : "Clever Surveys"
-      , tags : { firstType : Website, otherTypes : empty
-               , topics : Just { firstTopic : MachineLearning, otherTopics : singleton Optimization }
-               , firstLanguage : Python, otherLanguages : singleton Javascript
+      , tags : { types : singleton Website
+               , topics : Just $ unsafeFromArray [ MachineLearning, Optimization]
+               , languages : unsafeFromArray [ Python, JavaScript ]
                , scope : Major
                }
       , published : unsafeDate 2016 July 26 -- Date of v1.0.0 in Clever Surveys repo
@@ -162,9 +143,9 @@ projects =
       }
   , Project
       { name : "Optimal"
-      , tags : { firstType : Library, otherTypes : empty
-               , topics : Just { firstTopic : Optimization, otherTopics : singleton MachineLearning }
-               , firstLanguage : Python, otherLanguages : empty
+      , tags : { types : singleton Library
+               , topics : Just $ unsafeFromArray [ Optimization,  MachineLearning ]
+               , languages : singleton Python
                , scope : Major
                }
       , published : unsafeDate 2016 November 1 -- Date of v0.1.0
@@ -176,9 +157,9 @@ projects =
       }
   , Project
       { name : "Learning"
-      , tags : { firstType : Library, otherTypes : empty
-               , topics : Just { firstTopic : MachineLearning, otherTopics : singleton Optimization }
-               , firstLanguage : Python, otherLanguages : empty
+      , tags : { types : singleton Library
+               , topics : Just $ unsafeFromArray [ MachineLearning, Optimization ]
+               , languages : singleton Python
                , scope : Major
                }
       , published : unsafeDate 2017 September 14 -- Date readme was added. Approximate date of public GitHub.
@@ -190,9 +171,9 @@ projects =
       }
   , Project
       { name : "Reader"
-      , tags : { firstType : Website, otherTypes : singleton PWA
+      , tags : { types : unsafeFromArray [ Website, PWA ]
                , topics : Nothing
-               , firstLanguage : Python, otherLanguages : singleton Javascript
+               , languages : unsafeFromArray [ Python, JavaScript ]
                , scope : Medium
                }
       , published : unsafeDate 2018 June 5 -- Date of first App Engine version
@@ -204,9 +185,9 @@ projects =
       }
   , Project
       { name: "timeandreturn"
-      , tags : { firstType : Library, otherTypes : empty
+      , tags : { types : singleton Library
                , topics : Nothing
-               , firstLanguage : Javascript, otherLanguages : empty
+               , languages : singleton JavaScript
                , scope : Minor
                }
       , published : unsafeDate 2018 October 5 -- Date of v1.0.0
@@ -218,9 +199,9 @@ projects =
       }
   , Project
       { name: "chai-return-bool"
-      , tags : { firstType : Library, otherTypes : empty
+      , tags : { types : singleton Library
                , topics : Nothing
-               , firstLanguage : Javascript, otherLanguages : empty
+               , languages : singleton JavaScript
                , scope : Minor
                }
       , published : unsafeDate 2018 October 13 -- Date of v1.0.0
@@ -232,9 +213,9 @@ projects =
       }
   , Project
       { name : "nix-purescript-concur-frontend-starter"
-      , tags : { firstType : Template, otherTypes : empty
+      , tags : { types : singleton Template
                , topics : Nothing
-               , firstLanguage : Nix, otherLanguages : singleton PureScript
+               , languages : unsafeFromArray [ Nix, PureScript ]
                , scope : Minor
                }
       , published : unsafeDate 2020 January 8 -- Date of v1.0.0
@@ -246,9 +227,9 @@ projects =
       }
   , Project
       { name : "My CV Site"
-      , tags : { firstType : Website, otherTypes : empty
+      , tags : { types : singleton Website
                , topics : Nothing
-               , firstLanguage : PureScript, otherLanguages : singleton Nix
+               , languages : unsafeFromArray [ PureScript, Nix ]
                , scope : Medium
                }
       , published : unsafeDate 2020 March 10
@@ -264,19 +245,16 @@ name ∷ Project → String
 name (Project p) = p.name
 
 types ∷ Project → HashSet Tag
-types (Project p) = insert (toTag p.tags.firstType) (HS.map toTag p.tags.otherTypes)
+types (Project p) = fromFoldable $ map toTag p.tags.types
 
 topics ∷ Project → HashSet Tag
 topics (Project p) = maybe
-  (singleton noTopics)
-  (\{ firstTopic, otherTopics } → insert (toTag firstTopic) (HS.map toTag otherTopics))
+  (HS.singleton T.PrNoTopics)
+  (\ts → fromFoldable $ map toTag ts)
   p.tags.topics
 
-noTopics ∷ Tag
-noTopics = tag "other"
-
 languages ∷ Project → HashSet Tag
-languages (Project p) = insert (toTag p.tags.firstLanguage) (HS.map toTag p.tags.otherLanguages)
+languages (Project p) = fromFoldable $ map toTag p.tags.languages
 
 scope ∷ Project → Tag
 scope (Project p) = toTag p.tags.scope
