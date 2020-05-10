@@ -75,7 +75,6 @@ filterBlock category filters isEnabled = div
         flexBasis (px 0.0)
         margin (px 0.0) filterBlockSpace  (px 0.0) filterBlockSpace
         textAlign center
-        textTransform capitalize
     ]
     [ subsubsubhead
         [ style do

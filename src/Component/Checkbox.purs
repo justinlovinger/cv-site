@@ -7,12 +7,11 @@ module Component.Checkbox
   , checkedDisabledCheckboxStyle
   ) where
 
-import Prelude
-
 import CSS (BackgroundImage, CSS, absolute, backgroundColor, backgroundImage, border, borderBox, borderColor, boxSizing, display, em, ex, fromString, height, inlineBlock, key, position, px, solid, url, width)
+import CSS.Common (middle)
 import CSS.Overflow (hidden, overflow)
 import CSS.Render.Concur.React (style)
-import CSS.VerticalAlign (textBottom, verticalAlign)
+import CSS.VerticalAlign (verticalAlign)
 import Color (Color, toHexString)
 import Color.Scheme.SixteenAnsi (ColorScheme)
 import Concur.Core (Widget)
@@ -23,6 +22,7 @@ import Control.MultiAlternative (orr)
 import Data.Either (fromRight)
 import Data.String.Base64 (btoa)
 import Partial.Unsafe (unsafePartial)
+import Prelude (discard, pure, unit, ($), (&&), (*>), (<>))
 
 checkbox' ∷ ∀ a. ColorScheme → Boolean → Boolean → Array (ReactProps a) → Widget HTML a
 checkbox' c = checkbox
@@ -59,7 +59,7 @@ checkboxStyle c = do
   width (ex 2.0)
   height (ex 2.0)
   border solid (em 0.125) c.foreground
-  verticalAlign textBottom
+  verticalAlign middle
   key (fromString "cursor") "pointer"
 
 checkedCheckboxStyle ∷ ColorScheme → CSS
