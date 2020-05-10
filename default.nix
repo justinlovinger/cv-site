@@ -1,8 +1,8 @@
 # pin nixpkgs version for reproducible builds
 { pkgs ? (import (builtins.fetchGit {
   url = https://github.com/NixOS/nixpkgs-channels.git;
-  ref = "nixos-19.09";
-  rev = "b926503738cc5b19f3ee66f8a5745c41318a82ff";
+  ref = "nixos-20.03";
+  rev = "14dd961b8d5a2d2d3b2cf6526d47cbe5c3e97039";
 }) {}) }:
 
 let
@@ -18,7 +18,7 @@ let
   easy-ps = import (builtins.fetchGit {
     url = https://github.com/justinwoo/easy-purescript-nix.git;
     ref = "master";
-    rev = "01ae1bc844a4eed1af7dfbbb202fdd297e3441b9";
+    rev = "d4879bfd2b595d7fbd37da1a7bea5d0361975eb3";
   }) { inherit pkgs; };
 
   # Create a simple derivation
@@ -129,7 +129,7 @@ in pkgs.stdenv.mkDerivation {
   meta = with pkgs.stdenv.lib; {
     description = "The personal portfolio, resume, CV, website for Justin Lovinger";
     homepage = https://github.com/JustinLovinger/cv-site;
-    license = licences.mit;
+    license = licenses.mit;
     maintainers = [ ];
   };
 }
