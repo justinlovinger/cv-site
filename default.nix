@@ -1,8 +1,8 @@
 # pin nixpkgs version for reproducible builds
 { pkgs ? (import (builtins.fetchGit {
-  url = https://github.com/NixOS/nixpkgs-channels.git;
-  ref = "nixos-20.03";
-  rev = "14dd961b8d5a2d2d3b2cf6526d47cbe5c3e97039";
+  url = "https://github.com/NixOS/nixpkgs.git";
+  ref = "nixos-20.09";
+  rev = "06b11191834abae2b9ccace27818b74fe5a4b293";
 }) {}) }:
 
 let
@@ -10,16 +10,6 @@ let
   version = "1.0.0";
 
   nodejs = pkgs.nodejs;
-  # Use PureScript
-  # and related packages
-  # from [easy-purescript-nix]
-  # (https://github.com/justinwoo/easy-purescript-nix).
-  # This is updated more frequently than nixpkgs versions.
-  easy-ps = import (builtins.fetchGit {
-    url = https://github.com/justinwoo/easy-purescript-nix.git;
-    ref = "master";
-    rev = "d4879bfd2b595d7fbd37da1a7bea5d0361975eb3";
-  }) { inherit pkgs; };
 
   # Create a simple derivation
   # containing a node_modules/ directory.
@@ -45,20 +35,15 @@ let
 
   # Install spago packages with Nix
   spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
-  # Fix [`spagoPkgs` error]
-  # (https://github.com/justinwoo/spago2nix/issues/4#issuecomment-512904817)
-  spagoBuildFromNixStore = spagoPkgs.buildFromNixStore.overrideAttrs (oldAttrs: {
-    buildCommand = builtins.replaceStrings ["#!/usr/bin/env bash"] ["#!/bin/sh"] oldAttrs.buildCommand;
-  });
 in pkgs.stdenv.mkDerivation {
   pname = pname;
   version = version;
   src = ./.;
   buildInputs = [
-    easy-ps.purescript
     nodejs
     pkgs.closurecompiler
     pkgs.nodePackages.parcel-bundler
+    pkgs.purescript
   ];
   preConfigurePhases = [ "cleanPhase" ];
   cleanPhase = ''
@@ -76,7 +61,7 @@ in pkgs.stdenv.mkDerivation {
     # `export NODE_PATH=${nodeModules}/lib/node_modules`
     # we link to working directory
     rm -rf node_modules && ln -s ${nodeModules}/lib/node_modules ./node_modules
-    ${spagoBuildFromNixStore} "src/Main.purs" "src/**/*.purs"
+    ${spagoPkgs.buildFromNixStore}/bin/build-from-store "src/Main.purs" "src/**/*.purs"
   '';
   buildPhase = ''
     # Create build directory
@@ -99,7 +84,7 @@ in pkgs.stdenv.mkDerivation {
   '';
   doCheck = true;
   checkPhase = ''
-    ${spagoBuildFromNixStore} "test/Main.purs" "src/**/*.purs" "test/**/*.purs"
+    ${spagoPkgs.buildFromNixStore}/bin/build-from-store "test/Main.purs" "src/**/*.purs" "test/**/*.purs"
     NODE_PATH=output node -e "require('Test.Main').main();"
   '';
   installPhase = ''
@@ -120,7 +105,11 @@ in pkgs.stdenv.mkDerivation {
     # because we can't have spaces between path additions
     export PATH=\
     ${pkgs.nodePackages.node2nix}/bin:\
-    ${easy-ps.spago2nix}/bin:\
+    ${import (builtins.fetchGit {
+      url = https://github.com/justinwoo/spago2nix.git;
+      ref = "master";
+      rev = "898798204fa8f53837bbcf71e30aeb425deb0906";
+    }) { inherit pkgs nodejs; }}/bin:\
     $PATH
 
     # Add dependencies

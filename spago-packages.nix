@@ -487,11 +487,11 @@ let
 
     "globals" = pkgs.stdenv.mkDerivation {
         name = "globals";
-        version = "v4.1.0";
+        version = "v5.0.0";
         src = pkgs.fetchgit {
           url = "https://github.com/purescript/purescript-globals.git";
-          rev = "8e6d69c36b6fd8c988a3664fc033ad11dbdd5860";
-          sha256 = "03h4npdbsjr1mkjasdi071l0cl7zdf3l76a8f0x4ghx47yvpgadn";
+          rev = "0e31d4e66972feb49e209fc140744c1d914d0b8b";
+          sha256 = "0ryhrb2n6p1p35v5a854i640abylyyz3xqkrf5i9qf2lp6qjpsj4";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -727,11 +727,11 @@ let
 
     "parsing" = pkgs.stdenv.mkDerivation {
         name = "parsing";
-        version = "v5.0.3";
+        version = "v5.1.0";
         src = pkgs.fetchgit {
           url = "https://github.com/purescript-contrib/purescript-parsing.git";
-          rev = "e801a0ef42f3211b1602a94a269eef7ce551423f";
-          sha256 = "0m5xvb5kis28laj3navyyakyq408vw115c2dvngf1vljzh1hk5kj";
+          rev = "fc6cd08a642ce5428da3d1d38469e80d0a90014d";
+          sha256 = "199wjj02hh7wzkvh036vqv3369jrw1dpcb11n0nnqlqvvihfcy87";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -799,11 +799,11 @@ let
 
     "proxy" = pkgs.stdenv.mkDerivation {
         name = "proxy";
-        version = "v3.0.0";
+        version = "v3.0.2";
         src = pkgs.fetchgit {
           url = "https://github.com/purescript/purescript-proxy.git";
-          rev = "4a529b1f874fa2f32fc4c575cafaf46e0ab69fb6";
-          sha256 = "0rqf25b1n9p5sgx7gdsxwrfv9rb3sqxgqmqpp5kdm30lfk7snz24";
+          rev = "9ddbdabfcb0dc50f258dbc791b7258ca7c3487eb";
+          sha256 = "0p941cp8qz7dqyvybm7l1dyx6hbid4azxf35clj9i0zxr4k3vb8l";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -919,11 +919,11 @@ let
 
     "strings" = pkgs.stdenv.mkDerivation {
         name = "strings";
-        version = "v4.0.1";
+        version = "v4.0.2";
         src = pkgs.fetchgit {
           url = "https://github.com/purescript/purescript-strings.git";
-          rev = "94c843b93142d0edf1c31ec075c40b6984c3dc7b";
-          sha256 = "147l3l3fzn7liparhm2y3p8j4ck1lblra5j493p2hy5yy5ndznc8";
+          rev = "ec6da8faa02112a82286c0ff1c5e8fccd969ca42";
+          sha256 = "164mx0j9pv47m2hzckq51aa1rpb5wijcrh4bi78xn3s8n0fb6dq1";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -1027,11 +1027,11 @@ let
 
     "unordered-collections" = pkgs.stdenv.mkDerivation {
         name = "unordered-collections";
-        version = "v1.8.3";
+        version = "v1.10.0";
         src = pkgs.fetchgit {
           url = "https://github.com/fehrenbach/purescript-unordered-collections.git";
-          rev = "b7b54285f9a55e5f367f7e8b71b1ca1001672ee8";
-          sha256 = "15zcx49aq1cwms29lmhar7yc4580cclmhxa9krpqbi6d9d6sw050";
+          rev = "68ea3cb832d024f225d1e18bad110198d054d131";
+          sha256 = "1bl7jcg7sqxcdbivmsj7dkllq4v1kqwddnvn38wmp2cwgcd9v278";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -1051,11 +1051,11 @@ let
 
     "unsafe-reference" = pkgs.stdenv.mkDerivation {
         name = "unsafe-reference";
-        version = "v3.0.1";
+        version = "v3.1.0";
         src = pkgs.fetchgit {
           url = "https://github.com/purescript-contrib/purescript-unsafe-reference.git";
-          rev = "79d7de7b9351346a73e6c060d80532c95ba1c7c1";
-          sha256 = "0q758dz59qz0li4s3w1qcg921xp5i5rh6i1l611iv7rr8cbj11al";
+          rev = "b4dd3e562d33c53d278db47bce33cebcb0f75d89";
+          sha256 = "1l4y230y7gggmqqasbdfhl78zqdv1ri0jw26kyz3hsmvmmlmq9m6";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -1063,11 +1063,11 @@ let
 
     "web-dom" = pkgs.stdenv.mkDerivation {
         name = "web-dom";
-        version = "v4.0.1";
+        version = "v4.1.0";
         src = pkgs.fetchgit {
           url = "https://github.com/purescript-web/purescript-web-dom.git";
-          rev = "5bbf40aa543c3a3eb18adf1f86ce1c505c762108";
-          sha256 = "03awc83ggbwcvklzss48yf1bvm898pyim8zri1vjnnyy9yxyx7g0";
+          rev = "035845301b8283b96b7f2386d00d688838a86329";
+          sha256 = "14s8wcy30dpjq7fzkm55ksnl7b48b1lyhbdny3c93hnf01xaq2ml";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -1160,41 +1160,33 @@ let
       fi
     '';
 
-  getGlob = pkg: ''\".spago/${pkg.name}/${pkg.version}/src/**/*.purs\"'';
+  getGlob = pkg: ''".spago/${pkg.name}/${pkg.version}/src/**/*.purs"'';
 
-  getStoreGlob = pkg: ''\"${pkg.outPath}/src/**/*.purs\"'';
+  getStoreGlob = pkg: ''"${pkg.outPath}/src/**/*.purs"'';
 
 in {
   inherit inputs;
 
-  installSpagoStyle = pkgs.runCommand "install-spago-style" {} ''
-      >>$out echo "#!/usr/bin/env bash"
-      >>$out echo
-      >>$out echo "echo installing dependencies..."
-      >>$out echo "${builtins.toString (
-        builtins.map cpPackage (builtins.attrValues inputs))}"
-      >>$out echo "echo done."
-      chmod +x $out
+  installSpagoStyle = pkgs.writeShellScriptBin "install-spago-style" ''
+      set -e
+      echo installing dependencies...
+      ${builtins.toString (builtins.map cpPackage (builtins.attrValues inputs))}
+      echo "echo done."
   '';
 
-  buildSpagoStyle = pkgs.runCommand "build-spago-style" {} ''
-      >>$out echo "#!/usr/bin/env bash"
-      >>$out echo
-      >>$out echo "echo building project..."
-      >>$out echo "purs compile ${builtins.toString (
-        builtins.map getGlob (builtins.attrValues inputs))}" \"\$@\"
-      >>$out echo "echo done."
-      chmod +x $out
+  buildSpagoStyle = pkgs.writeShellScriptBin "build-spago-style" ''
+      set -e
+      echo building project...
+      purs compile ${builtins.toString (builtins.map getGlob (builtins.attrValues inputs))} "$@"
+      echo done.
   '';
 
-  buildFromNixStore = pkgs.runCommand "build-from-store" {} ''
-      >>$out echo "#!/usr/bin/env bash"
-      >>$out echo
-      >>$out echo "echo building project using sources from nix store..."
-      >>$out echo "purs compile ${builtins.toString (
-        builtins.map getStoreGlob (builtins.attrValues inputs))}" \"\$@\"
-      >>$out echo "echo done."
-      chmod +x $out
+  buildFromNixStore = pkgs.writeShellScriptBin "build-from-store" ''
+      set -e
+      echo building project using sources from nix store...
+      purs compile ${builtins.toString (
+        builtins.map getStoreGlob (builtins.attrValues inputs))} "$@"
+      echo done.
   '';
 
   mkBuildProjectOutput =
