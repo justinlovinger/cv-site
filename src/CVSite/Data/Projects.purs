@@ -235,7 +235,7 @@ projects =
                , scope : Medium
                }
       , published : unsafeDate 2020 March 10
-      , updated : unsafeDate 2020 March 10
+      , updated : unsafeDate 2021 February 25
       , description : "View the source code for this website"
       , longDescription : Nothing
       , teamRole : Nothing
