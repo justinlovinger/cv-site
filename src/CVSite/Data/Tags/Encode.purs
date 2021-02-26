@@ -31,6 +31,7 @@ urlDecode = fromArray <$$> sequence <<< map decodeTag <<< split' (Pattern "") wh
   decodeTag "g" = Just Game
   decodeTag "l" = Just Library
   decodeTag "w" = Just PWA
+  decodeTag "r" = Just Program
   decodeTag "t" = Just Template
   decodeTag "W" = Just Website
   -- Topic
@@ -40,6 +41,7 @@ urlDecode = fromArray <$$> sequence <<< map decodeTag <<< split' (Pattern "") wh
   decodeTag "x" = Just PrTextSummarization
   -- Language
   decodeTag "s" = Just CSharp
+  decodeTag "h" = Just Haskell
   decodeTag "j" = Just JavaScript
   decodeTag "N" = Just Nix
   decodeTag "u" = Just PureScript
@@ -92,6 +94,7 @@ urlEncode = joinWith "" <<< map encodeTag <<< sort <<< toArray where
   encodeTag Game = "g"
   encodeTag Library = "l"
   encodeTag PWA = "w"
+  encodeTag Program = "r"
   encodeTag Template = "t"
   encodeTag Website = "W"
   -- Topic
@@ -103,6 +106,7 @@ urlEncode = joinWith "" <<< map encodeTag <<< sort <<< toArray where
   {-- encodeTag C = "c" --}
   {-- encodeTag Cpp = "C" --}
   encodeTag CSharp = "s"
+  encodeTag Haskell = "h"
   encodeTag JavaScript = "j"
   encodeTag Nix = "N"
   encodeTag PureScript = "u"

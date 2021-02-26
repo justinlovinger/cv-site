@@ -26,6 +26,7 @@ data Tag
   | Game
   | Library
   | PWA
+  | Program
   | Template
   | Website
   -- Topic
@@ -35,6 +36,7 @@ data Tag
   | PrTextSummarization
   -- Language
   | CSharp
+  | Haskell
   | JavaScript
   | Nix
   | PureScript
@@ -73,6 +75,7 @@ instance hashableTag ∷ Hashable Tag where
   hash Game = 211
   hash Library = 212
   hash PWA = 213
+  hash Program = 2135
   hash Template = 214
   hash Website = 215
   -- Topic
@@ -82,6 +85,7 @@ instance hashableTag ∷ Hashable Tag where
   hash PrTextSummarization = 224
   -- Language
   hash CSharp = 231
+  hash Haskell = 2315
   hash JavaScript = 232
   hash Nix = 233
   hash PureScript = 234
@@ -118,6 +122,7 @@ instance showTag ∷ Show Tag where
   show Game = "game"
   show Library = "library"
   show PWA = "PWA"
+  show Program = "program"
   show Template = "template"
   show Website = "website"
   -- Topic
@@ -127,6 +132,7 @@ instance showTag ∷ Show Tag where
   show PrTextSummarization = "text summarization"
   -- Language
   show CSharp = "C#"
+  show Haskell = "Haskell"
   show JavaScript = "JavaScript"
   show Nix = "Nix"
   show PureScript = "PureScript"

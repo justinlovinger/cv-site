@@ -268,6 +268,7 @@ filtersMaster =
           [ Tuple Website true
           , Tuple PWA true
           , Tuple Library true
+          , Tuple Program true
           , Tuple Template true
           , Tuple Game false
           ]
@@ -278,8 +279,9 @@ filtersMaster =
           , Tuple PrNoTopics true
           ]
       , Tuple "language"
-          [ Tuple Nix true
+          [ Tuple Haskell true
           , Tuple PureScript true
+          , Tuple Nix true
           , Tuple Python true
           , Tuple JavaScript true
           , Tuple CSharp true

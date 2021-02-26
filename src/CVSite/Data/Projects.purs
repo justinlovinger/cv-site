@@ -20,7 +20,7 @@ import CVSite.Data.Tags (class TagLike, class Tagged, Tag, toTag)
 import CVSite.Data.Tags as T
 import Data.Array.NonEmpty (NonEmptyArray, singleton)
 import Data.Array.NonEmpty.Unsafe (unsafeFromArray)
-import Data.Date (Date, Month(January, February, March, April, June, July, September, October, November, December))
+import Data.Date (Date, Month(January, February, March, April, June, July, August, September, October, November, December))
 import Data.Date.Unsafe (unsafeDate)
 import Data.HashSet (HashSet, fromArray, fromFoldable, union)
 import Data.HashSet as HS
@@ -46,12 +46,13 @@ newtype Project = Project
 instance taggedProject ∷ Tagged Project where
   tags p = fromArray [ T.Project, scope p ] `union` types p `union` topics p `union` languages p
 
-data Type_ = Website | PWA | Library | Template | Game
+data Type_ = Website | PWA | Library | Program | Template | Game
 
 instance tagLikeType_ ∷ TagLike Type_ where
   toTag Website = T.Website
   toTag PWA = T.PWA
   toTag Library = T.Library
+  toTag Program = T.Program
   toTag Template = T.Template
   toTag Game = T.Game
 
@@ -64,11 +65,12 @@ instance tagLikeTopic ∷ TagLike Topic where
   toTag Optimization = T.PrOptimization
   toTag TextSummarization = T.PrTextSummarization
 
-data Language = Nix | PureScript | Python | JavaScript | CSharp
+data Language = Haskell | PureScript | Nix | Python | JavaScript | CSharp
 
 instance tagLikeLanguage ∷ TagLike Language where
-  toTag Nix = T.Nix
+  toTag Haskell = T.Haskell
   toTag PureScript = T.PureScript
+  toTag Nix = T.Nix
   toTag Python = T.Python
   toTag JavaScript = T.JavaScript
   toTag CSharp = T.CSharp
@@ -238,6 +240,20 @@ projects =
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/JustinLovinger/cv-site"
+      }
+  , Project
+      { name : "Collage"
+      , tags : { types : singleton Program
+               , topics : Nothing
+               , languages : unsafeFromArray [ Haskell, Nix ]
+               , scope : Minor
+               }
+      , published : unsafeDate 2020 August 30
+      , updated : unsafeDate 2020 August 30
+      , description : "Create a collage of semi-random images"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/JustinLovinger/collage"
       }
   ]
 
