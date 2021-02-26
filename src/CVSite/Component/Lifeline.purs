@@ -371,7 +371,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
           [ style do
               subsubheadStyle
               textAlign leftTextAlign
-              if isJust $ Pu.url p
+              if isJust $ Pu.publicationUrl p
                 -- Add extra space
                 -- between this link
                 -- and the one below,
@@ -380,7 +380,7 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
                 else pure unit
           ]
           [ a [ href $ unwrap $ Pu.documentUrl p ] [ text $ Pu.name p ] ]
-      , subtext' case Pu.url p of
+      , subtext' case Pu.publicationUrl p of
           Just (URL url) →
             [ span' [ text $ show Publication <> categorySep ]
             , a
@@ -396,7 +396,14 @@ timelineItems = sortBy (\a b → compare b.date a.date) $ -- Sorted by descendin
                 <> categorySep
                 <> showTags (Pu.topics p)
             ]
-      , paragraph [] [ text (Pu.description p <> ".") ]
+      , paragraph [] $
+          [ text (Pu.description p <> ".") ]
+          <> case Pu.codeUrl p of
+            Just (URL url) →
+              [ a [ href url ] [ text " Source code is available" ]
+              , text "."
+              ]
+            Nothing → []
       ]
     projectToWidget p = orr
       [ subsubhead

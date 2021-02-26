@@ -1,13 +1,14 @@
 module CVSite.Data.Publications
   ( Publication
+  , codeUrl
   , description
   , documentUrl
   , name
+  , publicationUrl
   , publications
   , published
   , topics
   , type_
-  , url
   ) where
 
 import Prelude
@@ -29,7 +30,8 @@ newtype Publication = Publication
   , published ∷ Date
   , description ∷ String -- No punctuation
   , documentUrl ∷ URL
-  , url ∷ Maybe URL
+  , codeUrl :: Maybe URL
+  , publicationUrl ∷ Maybe URL
   }
 instance taggedPublication ∷ Tagged Publication where
   tags p = fromArray [ T.Publication, type_ p ] `union` (topics p)
@@ -65,7 +67,8 @@ publications =
       , published : unsafeDate 2014 November 3 -- Date of conference
       , description : "Automatically optimize genetic algorithm hyperparameters"
       , documentUrl : URL files.publications."harnessing-mother-nature".url
-      , url : Just $ URL "https://www.sciencedirect.com/science/article/pii/S1877050914012824"
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://www.sciencedirect.com/science/article/pii/S1877050914012824"
       }
   , Publication
       { name : "Scrubbing the web for association rules: An application in predictive text"
@@ -73,7 +76,8 @@ publications =
       , published : unsafeDate 2015 December 9 -- Date of conference
       , description : "Data mine social media to improve smartphone keyboard predictive text"
       , documentUrl : URL files.publications."scrubbing-the-web-for-association-rules".url
-      , url : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7424353"
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7424353"
       }
   , Publication
       { name : "Neural Field: Supervised apportioned incremental learning (SAIL)"
@@ -81,7 +85,8 @@ publications =
       , published : unsafeDate 2016 July 24 -- Date of conference
       , description : "Learn in real-time with a novel incremental supervised learning model"
       , documentUrl : URL files.publications."neural-field".url
-      , url : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7727510"
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7727510"
       }
   , Publication
       { name : "The effect of human thought on data: an analysis of self-reported data in supervised learning and neural networks"
@@ -89,7 +94,8 @@ publications =
       , published : unsafeDate 2017 February 16 -- Date published
       , description : "Examine the difficulty of supervised learning with data directly reported by people"
       , documentUrl : URL files.publications."the-effect-of-human-thought-on-data".url
-      , url : Just $ URL "https://link.springer.com/article/10.1007/s13748-017-0118-4"
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s13748-017-0118-4"
       }
   , Publication
       { name : "Gist: general integrated summarization of text and reviews"
@@ -97,7 +103,8 @@ publications =
       , published : unsafeDate 2017 October 10 -- Date published. Issued much later.
       , description : "Automatically summarize text and reviews"
       , documentUrl : URL files.publications.gist.url
-      , url : Just $ URL "https://link.springer.com/article/10.1007/s00500-017-2882-2"
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s00500-017-2882-2"
       }
   , Publication
       { name : "Enhanced Simplified Memory-bounded A Star (SMA*+)"
@@ -105,7 +112,8 @@ publications =
       , published : unsafeDate 2017 October 19 -- Date of conference
       , description : "Search in low memory environments with a memory-efficient optimal search algorithm"
       , documentUrl : URL files.publications."sma-star-plus".url
-      , url : Just $ URL "https://easychair.org/publications/paper/TL2M"
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://easychair.org/publications/paper/TL2M"
       }
   , Publication
       { name : "A Tutorial on Supervised Learning from the Perspective of Mathematical Optimization"
@@ -113,7 +121,8 @@ publications =
       , published : unsafeDate 2018 May 22 -- Date of thesis defense
       , description : "Master supervised machine learning at a fundamental level"
       , documentUrl : URL files.publications."supervised-learning-as-mathematical-optimization-tutorial".url
-      , url : Nothing
+      , codeUrl : Nothing
+      , publicationUrl : Nothing
       }
   , Publication
       { name : "Infinite Lattice Learner: an ensemble for incremental learning"
@@ -121,7 +130,8 @@ publications =
       , published : unsafeDate 2019 September 6 -- Date published
       , description : "Learn in real-time with a novel incremental supervised learning ensemble"
       , documentUrl : URL files.publications."infinite-lattice-learner".url
-      , url : Just $ URL "https://link.springer.com/article/10.1007/s00500-019-04330-7"
+      , codeUrl : Just $ URL "https://github.com/JustinLovinger/ill"
+      , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s00500-019-04330-7"
       }
   ]
 
@@ -143,5 +153,8 @@ description (Publication p) = p.description
 documentUrl ∷ Publication → URL
 documentUrl (Publication p) = p.documentUrl
 
-url ∷ Publication → Maybe URL
-url (Publication p) = p.url
+codeUrl ∷ Publication → Maybe URL
+codeUrl (Publication p) = p.codeUrl
+
+publicationUrl ∷ Publication → Maybe URL
+publicationUrl (Publication p) = p.publicationUrl
