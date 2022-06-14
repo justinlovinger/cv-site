@@ -105,6 +105,7 @@ in pkgs.stdenv.mkDerivation {
     # because we can't have spaces between path additions
     export PATH=\
     ${pkgs.nodePackages.node2nix}/bin:\
+    ${pkgs.nodePackages.purescript-language-server}/bin:\
     ${import (builtins.fetchGit {
       url = https://github.com/justinwoo/spago2nix.git;
       ref = "master";
