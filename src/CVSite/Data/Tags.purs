@@ -41,6 +41,7 @@ data Tag
   | Nix
   | PureScript
   | Python
+  | Rust
   -- Scope
   | Major
   | Medium
@@ -90,6 +91,7 @@ instance hashableTag ∷ Hashable Tag where
   hash Nix = 233
   hash PureScript = 234
   hash Python = 235
+  hash Rust = 236
   -- Scope
   hash Major = 241
   hash Medium = 242
@@ -137,6 +139,7 @@ instance showTag ∷ Show Tag where
   show Nix = "Nix"
   show PureScript = "PureScript"
   show Python = "Python"
+  show Rust = "Rust"
   -- Scope
   show Major = "major"
   show Medium = "medium"

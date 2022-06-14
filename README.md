@@ -30,11 +30,11 @@ the Nix shell.
 
 ### Build code
 
-> eval "$buildPhase"
+> eval "\$buildPhase"
 
 ### Test code
 
-> eval "$checkPhase"
+> eval "\$checkPhase"
 
 ### Run Dev Server
 
@@ -55,9 +55,9 @@ when your PureScript changes.
 ## Production build
 
 Run `nix-build`.
-./result/dist/ contains
+`./result/dist/` contains
 the compiled frontend
-and ./result/bin/ contains
+and `./result/bin/` contains
 a simple hosting script.
 
 ## Styling elements

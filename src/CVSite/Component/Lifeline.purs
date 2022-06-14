@@ -279,7 +279,8 @@ filtersMaster =
           , Tuple PrNoTopics true
           ]
       , Tuple "language"
-          [ Tuple Haskell true
+          [ Tuple Rust true
+          , Tuple Haskell true
           , Tuple PureScript true
           , Tuple Nix true
           , Tuple Python true

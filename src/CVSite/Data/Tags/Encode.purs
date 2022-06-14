@@ -46,6 +46,7 @@ urlDecode = fromArray <$$> sequence <<< map decodeTag <<< split' (Pattern "") wh
   decodeTag "N" = Just Nix
   decodeTag "u" = Just PureScript
   decodeTag "y" = Just Python
+  decodeTag "R" = Just Rust
   -- Scope
   decodeTag "a" = Just Major
   decodeTag "E" = Just Medium
@@ -111,6 +112,7 @@ urlEncode = joinWith "" <<< map encodeTag <<< sort <<< toArray where
   encodeTag Nix = "N"
   encodeTag PureScript = "u"
   encodeTag Python = "y"
+  encodeTag Rust = "R"
   -- Scope
   encodeTag Major = "a"
   encodeTag Medium = "E"

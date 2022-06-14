@@ -65,9 +65,10 @@ instance tagLikeTopic ∷ TagLike Topic where
   toTag Optimization = T.PrOptimization
   toTag TextSummarization = T.PrTextSummarization
 
-data Language = Haskell | PureScript | Nix | Python | JavaScript | CSharp
+data Language = Rust | Haskell | PureScript | Nix | Python | JavaScript | CSharp
 
 instance tagLikeLanguage ∷ TagLike Language where
+  toTag Rust = T.Rust
   toTag Haskell = T.Haskell
   toTag PureScript = T.PureScript
   toTag Nix = T.Nix
@@ -235,7 +236,7 @@ projects =
                , scope : Medium
                }
       , published : unsafeDate 2020 March 10
-      , updated : unsafeDate 2021 February 25
+      , updated : unsafeDate 2022 June 14
       , description : "View the source code for this website"
       , longDescription : Nothing
       , teamRole : Nothing
@@ -254,6 +255,20 @@ projects =
       , longDescription : Nothing
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/JustinLovinger/collage"
+      }
+  , Project
+      { name : "webgrep"
+      , tags : { types : singleton Program
+               , topics : Nothing
+               , languages : unsafeFromArray [ Rust, Nix ]
+               , scope : Medium
+               }
+      , published : unsafeDate 2022 June 13
+      , updated : unsafeDate 2022 June 13
+      , description : "Recursively search the web"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/JustinLovinger/webgrep"
       }
   ]
 
