@@ -7,7 +7,7 @@
 
 let
   pname = "justinlovinger-cv-site";
-  version = "1.0.7";
+  version = "1.0.8";
 
   nodejs = pkgs.nodejs;
 
