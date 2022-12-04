@@ -253,7 +253,7 @@ filtersMaster =
       [ Tuple "type"
           [ Tuple Thesis true
           , Tuple Journal true
-          , Tuple Conference false
+          , Tuple Conference true
           ]
       , Tuple "topic"
           [ Tuple PuMachineLearning true
