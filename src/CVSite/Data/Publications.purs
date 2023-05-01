@@ -17,7 +17,7 @@ import CVSite.Data.Tags (class TagLike, class Tagged, Tag, toTag)
 import CVSite.Data.Tags as T
 import Data.Array.NonEmpty (NonEmptyArray, singleton)
 import Data.Array.NonEmpty.Unsafe (unsafeFromArray)
-import Data.Date (Date, Month(February, May, July, September, October, November, December))
+import Data.Date (Date, Month(January, February, May, July, September, October, November, December))
 import Data.Date.Unsafe (unsafeDate)
 import Data.HashSet (HashSet, fromArray, fromFoldable, union)
 import Data.Maybe (Maybe(Just, Nothing))
@@ -132,6 +132,15 @@ publications =
       , documentUrl : URL files.publications."infinite-lattice-learner".url
       , codeUrl : Just $ URL "https://github.com/JustinLovinger/ill"
       , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s00500-019-04330-7"
+      }
+  , Publication
+      { name : "AUTO: Supervised Learning With Full Model Search and Global Optimization"
+      , tags : { type_ : Journal, topics : unsafeFromArray [ MachineLearning, Optimization ] }
+      , published : unsafeDate 2023 January 11 -- Date published
+      , description : "Incrementally build models with derivative-free optimization and reinforcement learning to solve supervised learning problems"
+      , documentUrl : URL files.publications."auto".url
+      , codeUrl : Nothing
+      , publicationUrl : Just $ URL "https://www.tandfonline.com/doi/full/10.1080/0952813X.2023.2165717"
       }
   ]
 

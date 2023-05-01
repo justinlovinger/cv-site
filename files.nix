@@ -1,5 +1,9 @@
 {
   publications = {
+    auto = {
+      file = ~/data/_file/by-name/auto.pdf;
+      url = "/file/auto.pdf";
+    };
     gist = {
       file = ~/data/_file/by-name/gist.pdf;
       url = "/file/gist.pdf";

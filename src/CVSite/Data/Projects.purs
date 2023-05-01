@@ -20,7 +20,7 @@ import CVSite.Data.Tags (class TagLike, class Tagged, Tag, toTag)
 import CVSite.Data.Tags as T
 import Data.Array.NonEmpty (NonEmptyArray, singleton)
 import Data.Array.NonEmpty.Unsafe (unsafeFromArray)
-import Data.Date (Date, Month(January, February, March, April, June, July, August, September, October, November, December))
+import Data.Date (Date, Month(January, February, March, April, May, June, July, August, September, October, November, December))
 import Data.Date.Unsafe (unsafeDate)
 import Data.HashSet (HashSet, fromArray, fromFoldable, union)
 import Data.HashSet as HS
@@ -236,7 +236,7 @@ projects =
                , scope : Medium
                }
       , published : unsafeDate 2020 March 10
-      , updated : unsafeDate 2022 June 14
+      , updated : unsafeDate 2023 May 1
       , description : "View the source code for this website"
       , longDescription : Nothing
       , teamRole : Nothing
