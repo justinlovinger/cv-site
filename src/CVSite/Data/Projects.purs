@@ -145,7 +145,7 @@ projects =
       , url : Just $ URL "https://cleversurveys.com/"
       }
   , Project
-      { name : "Optimal"
+      { name : "optimal-py"
       , tags : { types : singleton Library
                , topics : Just $ unsafeFromArray [ Optimization,  MachineLearning ]
                , languages : singleton Python
@@ -159,7 +159,7 @@ projects =
       , url : Just $ URL "https://github.com/justinlovinger/optimal-py"
       }
   , Project
-      { name : "Learning"
+      { name : "optimal-py-learning"
       , tags : { types : singleton Library
                , topics : Just $ unsafeFromArray [ MachineLearning, Optimization ]
                , languages : singleton Python
