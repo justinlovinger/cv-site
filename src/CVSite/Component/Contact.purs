@@ -33,7 +33,7 @@ contact = div
         , span [ className hiddenClassName ] [ text "notpartofemail" ] -- Obfuscate from bots
         , text "justinlovinger.com"
         ]
-    , subsubhead' [ a [ href "https://github.com/JustinLovinger" ] [ text "https://github.com/JustinLovinger" ] ]
+    , subsubhead' [ a [ href "https://github.com/justinlovinger" ] [ text "https://github.com/justinlovinger" ] ]
     ]
   where
     subsubhead' = subsubhead [ style $ subsubheadStyle *> marginBottom (em 1.0) ]

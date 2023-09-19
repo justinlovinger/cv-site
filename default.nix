@@ -119,7 +119,7 @@ in
     '';
     meta = with pkgs.stdenv.lib; {
       description = "The personal portfolio, resume, CV, website for Justin Lovinger";
-      homepage = "https://github.com/JustinLovinger/cv-site";
+      homepage = "https://github.com/justinlovinger/cv-site";
       license = licenses.mit;
       maintainers = [];
     };

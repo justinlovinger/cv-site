@@ -156,7 +156,7 @@ projects =
       , description : "Perform metaheuristic optimization with Genetic Algorithms, Gravitational Search, Cross Entropy, and PBIL"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/optimal"
+      , url : Just $ URL "https://github.com/justinlovinger/optimal-py"
       }
   , Project
       { name : "Learning"
@@ -170,7 +170,7 @@ projects =
       , description : "Perform machine learning with several models and powerful numerical optimization methods"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/learning"
+      , url : Just $ URL "https://github.com/justinlovinger/optimal-py-learning"
       }
   , Project
       { name : "Reader"
@@ -198,7 +198,7 @@ projects =
       , description : "Easily time blocks of code for performance profiling"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/timeandreturn"
+      , url : Just $ URL "https://github.com/justinlovinger/timeandreturn"
       }
   , Project
       { name: "chai-return-bool"
@@ -212,7 +212,7 @@ projects =
       , description : "Compose chai.js assertions with libraries expecting boolean"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/chai-return-bool"
+      , url : Just $ URL "https://github.com/justinlovinger/chai-return-bool"
       }
   , Project
       { name : "nix-purescript-concur-frontend-starter"
@@ -226,7 +226,7 @@ projects =
       , description : "Build a modern frontend with Nix, PureScript, and Concur"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/nix-purescript-concur-frontend-starter"
+      , url : Just $ URL "https://github.com/justinlovinger/nix-purescript-concur-frontend-starter"
       }
   , Project
       { name : "My CV Site"
@@ -240,7 +240,7 @@ projects =
       , description : "View the source code for this website"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/cv-site"
+      , url : Just $ URL "https://github.com/justinlovinger/cv-site"
       }
   , Project
       { name : "Collage"
@@ -254,7 +254,7 @@ projects =
       , description : "Create a collage of semi-random images"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/collage"
+      , url : Just $ URL "https://github.com/justinlovinger/collage"
       }
   , Project
       { name : "webgrep"
@@ -268,7 +268,7 @@ projects =
       , description : "Recursively search the web"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL "https://github.com/JustinLovinger/webgrep"
+      , url : Just $ URL "https://github.com/justinlovinger/webgrep"
       }
   ]
 

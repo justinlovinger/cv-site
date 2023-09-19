@@ -130,7 +130,7 @@ publications =
       , published : unsafeDate 2019 September 6 -- Date published
       , description : "Learn in real-time with a novel incremental supervised learning ensemble"
       , documentUrl : URL files.publications."infinite-lattice-learner".url
-      , codeUrl : Just $ URL "https://github.com/JustinLovinger/ill"
+      , codeUrl : Just $ URL "https://github.com/justinlovinger/ill"
       , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s00500-019-04330-7"
       }
   , Publication

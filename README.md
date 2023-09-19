@@ -3,7 +3,7 @@
 Frontend for [https://www.justinlovinger.com/](https://www.justinlovinger.com/),
 my personal portfolio website.
 Started from
-[Nix PureScript Concur Starter](https://github.com/JustinLovinger/nix-purescript-concur-frontend-starter).
+[Nix PureScript Concur Starter](https://github.com/justinlovinger/nix-purescript-concur-frontend-starter).
 
 ## Installing Node packages
 
