@@ -270,6 +270,34 @@ projects =
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/justinlovinger/webgrep"
       }
+  , Project
+      { name : "optimal-rs"
+      , tags : { types : singleton Library
+               , topics : Just $ unsafeFromArray [ Optimization,  MachineLearning ]
+               , languages : unsafeFromArray [ Rust, Nix ]
+               , scope : Major
+               }
+      , published : unsafeDate 2023 September 6
+      , updated : unsafeDate 2023 September 12
+      , description : "Perform mathematical optimization and machine learning with an intuitive and transparent iterator-based API"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/justinlovinger/optimal-rs"
+      }
+  , Project
+      { name : "owm"
+      , tags : { types : singleton Program
+               , topics : Just $ singleton Optimization
+               , languages : unsafeFromArray [ Rust, Nix ]
+               , scope : Medium
+               }
+      , published : unsafeDate 2023 September 6
+      , updated : unsafeDate 2023 September 19
+      , description : "Use mathematical optimization to invent window-layouts on-the-fly"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/justinlovinger/owm"
+      }
   ]
 
 name ∷ Project → String
