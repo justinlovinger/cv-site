@@ -298,6 +298,20 @@ projects =
       , teamRole : Nothing
       , url : Just $ URL "https://github.com/justinlovinger/owm"
       }
+  , Project
+      { name : "tag"
+      , tags : { types : singleton Program
+               , topics : Nothing
+               , languages : unsafeFromArray [ Rust, Nix ]
+               , scope : Medium
+               }
+      , published : unsafeDate 2023 October 16
+      , updated : unsafeDate 2023 October 16
+      , description : "Automatically organize files with a simple tagging system"
+      , longDescription : Nothing
+      , teamRole : Nothing
+      , url : Just $ URL "https://github.com/justinlovinger/tag"
+      }
   ]
 
 name ∷ Project → String
