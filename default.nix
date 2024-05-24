@@ -7,7 +7,7 @@
   }) {}),
 }: let
   pname = "justinlovinger-cv-site";
-  version = "1.0.8";
+  version = "1.0.9";
 
   nodejs = pkgs.nodejs;
 
