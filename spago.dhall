@@ -8,22 +8,16 @@ You can edit this file as you like.
     "nix-purescript-concur-frontend-starter"
 , dependencies =
     [ "b64"
-    , "behaviors"
-    , "canvas"
     , "concur-react"
     , "console"
     , "css"
     , "datetime"
-    , "drawing"
     , "effect"
     , "foreign-object"
     , "formatters"
-    , "random"
-    , "record"
     , "spec"
     , "spec-quickcheck"
     , "unordered-collections"
-    , "web-touchevents"
     ]
 , packages =
     ./packages.dhall
