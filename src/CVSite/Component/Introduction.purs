@@ -35,9 +35,9 @@ introduction = hero
     , heading [ style $ headingStyle *> hpadding ] [ text "Justin Lovinger" ]
     , div
         [ style $ color altForeground *> hpadding ]
-        [ subsubhead [] [ text "Machine Learning Expert" ]
-        , subsubhead [] [ text "Full Stack Web Developer" ]
-        , subsubhead [] [ text "Amateur Bunny Photographer" ]
+        [ subsubhead [] [ text "Machine Learning" ]
+        , subsubhead [] [ text "Mathematical Optimization" ]
+        , subsubhead [] [ text "Software Development" ]
         ]
     , div
         [ style $ do
