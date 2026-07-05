@@ -7,6 +7,19 @@
       rev = "06b11191834abae2b9ccace27818b74fe5a4b293";
     }) { }
   ),
+  fileUrls ? {
+    auto = "/file/auto.pdf";
+    gist = "/file/gist.pdf";
+    gladiator-manager = "/file/gladiator-manager.zip";
+    harnessing-mother-nature = "/file/harnessing-mother-nature.pdf";
+    infinite-lattice-learner = "/file/infinite-lattice-learner.pdf";
+    labyrinth-rl = "/file/labyrinth-rl.zip";
+    neural-field = "/file/neural-field.pdf";
+    scrubbing-the-web-for-association-rules = "/file/scrubbing-the-web-for-association-rules.pdf";
+    sma-star-plus = "/file/sma-star-plus.pdf";
+    supervised-learning-as-mathematical-optimization-tutorial = "/file/supervised-learning-as-mathematical-optimization-tutorial.pdf";
+    the-effect-of-human-thought-on-data = "/file/the-effect-of-human-thought-on-data.pdf";
+  },
 }:
 let
   pname = "justinlovinger-cv-site";
@@ -56,10 +69,10 @@ pkgs.stdenv.mkDerivation {
   configurePhase = ''
     # Generate PureScript files
     mkdir -p src/Generated
-    echo "module Generated.Files where" > src/Generated/Files.purs
-    echo 'files = ${
-      builtins.replaceStrings [ "=" ] [ ":" ] (builtins.toJSON (import ./files.nix))
-    }' >> src/Generated/Files.purs
+    echo "module Generated.FileUrls where" > src/Generated/FileUrls.purs
+    echo 'fileUrls = ${
+      builtins.replaceStrings [ "=" ] [ ":" ] (builtins.toJSON fileUrls)
+    }' >> src/Generated/FileUrls.purs
 
     # Install dependencies
     # `parcel` does not support `NODE_PATH`

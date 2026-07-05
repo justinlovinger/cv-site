@@ -21,7 +21,7 @@ import Data.Date (Date, Month(January, February, May, July, September, October, 
 import Data.Date.Unsafe (unsafeDate)
 import Data.HashSet (HashSet, fromArray, fromFoldable, union)
 import Data.Maybe (Maybe(Just, Nothing))
-import Generated.Files (files)
+import Generated.FileUrls (fileUrls)
 import Web.HTML.History (URL(URL))
 
 newtype Publication = Publication
@@ -66,7 +66,7 @@ publications =
       , tags : { type_ : Conference, topics : singleton Optimization }
       , published : unsafeDate 2014 November 3 -- Date of conference
       , description : "Automatically optimize genetic algorithm hyperparameters"
-      , documentUrl : URL files.publications."harnessing-mother-nature".url
+      , documentUrl : URL fileUrls."harnessing-mother-nature"
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://www.sciencedirect.com/science/article/pii/S1877050914012824"
       }
@@ -75,7 +75,7 @@ publications =
       , tags : { type_ : Conference, topics : singleton MachineLearning }
       , published : unsafeDate 2015 December 9 -- Date of conference
       , description : "Data mine social media to improve smartphone keyboard predictive text"
-      , documentUrl : URL files.publications."scrubbing-the-web-for-association-rules".url
+      , documentUrl : URL fileUrls."scrubbing-the-web-for-association-rules"
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7424353"
       }
@@ -84,7 +84,7 @@ publications =
       , tags : { type_ : Conference, topics : unsafeFromArray [ MachineLearning, IncrementalLearning ] }
       , published : unsafeDate 2016 July 24 -- Date of conference
       , description : "Learn in real-time with a novel incremental supervised learning model"
-      , documentUrl : URL files.publications."neural-field".url
+      , documentUrl : URL fileUrls."neural-field"
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://ieeexplore.ieee.org/abstract/document/7727510"
       }
@@ -93,7 +93,7 @@ publications =
       , tags : { type_ : Journal, topics : singleton MachineLearning }
       , published : unsafeDate 2017 February 16 -- Date published
       , description : "Examine the difficulty of supervised learning with data directly reported by people"
-      , documentUrl : URL files.publications."the-effect-of-human-thought-on-data".url
+      , documentUrl : URL fileUrls."the-effect-of-human-thought-on-data"
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s13748-017-0118-4"
       }
@@ -102,7 +102,7 @@ publications =
       , tags : { type_ : Journal, topics : unsafeFromArray [ TextSummarization, Optimization ] }
       , published : unsafeDate 2017 October 10 -- Date published. Issued much later.
       , description : "Automatically summarize text and reviews"
-      , documentUrl : URL files.publications.gist.url
+      , documentUrl : URL fileUrls.gist
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s00500-017-2882-2"
       }
@@ -111,7 +111,7 @@ publications =
       , tags : { type_ : Conference, topics : singleton Search }
       , published : unsafeDate 2017 October 19 -- Date of conference
       , description : "Search in low memory environments with a memory-efficient optimal search algorithm"
-      , documentUrl : URL files.publications."sma-star-plus".url
+      , documentUrl : URL fileUrls."sma-star-plus"
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://easychair.org/publications/paper/TL2M"
       }
@@ -120,7 +120,7 @@ publications =
       , tags : { type_ : Thesis, topics : unsafeFromArray [ MachineLearning, Optimization ] }
       , published : unsafeDate 2018 May 22 -- Date of thesis defense
       , description : "Master supervised machine learning at a fundamental level"
-      , documentUrl : URL files.publications."supervised-learning-as-mathematical-optimization-tutorial".url
+      , documentUrl : URL fileUrls."supervised-learning-as-mathematical-optimization-tutorial"
       , codeUrl : Nothing
       , publicationUrl : Nothing
       }
@@ -129,7 +129,7 @@ publications =
       , tags : { type_ : Journal, topics : unsafeFromArray [ MachineLearning, IncrementalLearning ] }
       , published : unsafeDate 2019 September 6 -- Date published
       , description : "Learn in real-time with a novel incremental supervised learning ensemble"
-      , documentUrl : URL files.publications."infinite-lattice-learner".url
+      , documentUrl : URL fileUrls."infinite-lattice-learner"
       , codeUrl : Just $ URL "https://github.com/justinlovinger/ill"
       , publicationUrl : Just $ URL "https://link.springer.com/article/10.1007/s00500-019-04330-7"
       }
@@ -138,7 +138,7 @@ publications =
       , tags : { type_ : Journal, topics : unsafeFromArray [ MachineLearning, Optimization ] }
       , published : unsafeDate 2023 January 11 -- Date published
       , description : "Incrementally build models with derivative-free optimization and reinforcement learning to solve supervised learning problems"
-      , documentUrl : URL files.publications."auto".url
+      , documentUrl : URL fileUrls."auto"
       , codeUrl : Nothing
       , publicationUrl : Just $ URL "https://www.tandfonline.com/doi/full/10.1080/0952813X.2023.2165717"
       }

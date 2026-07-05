@@ -25,7 +25,7 @@ import Data.Date.Unsafe (unsafeDate)
 import Data.HashSet (HashSet, fromArray, fromFoldable, union)
 import Data.HashSet as HS
 import Data.Maybe (Maybe(Just, Nothing), maybe)
-import Generated.Files (files)
+import Generated.FileUrls (fileUrls)
 import Web.HTML.History (URL(URL))
 
 newtype Project = Project
@@ -100,7 +100,7 @@ projects =
       , description : "Escape a labyrinth with traditional roguelike mechanics and a unique victory condition"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL files.projects."labyrinth-rl".url
+      , url : Just $ URL fileUrls."labyrinth-rl"
       }
   , Project
       { name : "Gladiator Manager"
@@ -114,7 +114,7 @@ projects =
       , description : "Manage gladiators in physics driven combat"
       , longDescription : Nothing
       , teamRole : Nothing
-      , url : Just $ URL files.projects."gladiator-manager".url
+      , url : Just $ URL fileUrls."gladiator-manager"
       }
   , Project
       { name : "Gist"
